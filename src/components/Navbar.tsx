@@ -11,17 +11,20 @@ import {
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
+import { useLanguage } from '@/lib/LanguageContext';
+import LanguageToggle from '@/components/LanguageToggle';
 
 const navLinks = [
-    { href: '/', label: 'Tableau de bord', icon: LayoutDashboard },
-    { href: '/map', label: 'Carte', icon: Map },
-    { href: '/history', label: 'Historique', icon: History },
-    { href: '/alerts', label: 'Alertes', icon: Bell },
+    { href: '/', key: 'nav.dashboard' as const, icon: LayoutDashboard },
+    { href: '/map', key: 'nav.map' as const, icon: Map },
+    { href: '/history', key: 'nav.history' as const, icon: History },
+    { href: '/alerts', key: 'nav.alerts' as const, icon: Bell },
 ];
 
 export default function Navbar() {
     const pathname = usePathname();
     const router = useRouter();
+    const { t } = useLanguage();
     const [open, setOpen] = useState(false);
     const [authed, setAuthed] = useState(false);
 
@@ -32,7 +35,7 @@ export default function Navbar() {
     async function handleLogout() {
         await logout();
         setAuthed(false);
-        toast.success('Déconnexion réussie');
+        toast.success(t('toast.logout_success'));
         router.push('/');
     }
 
@@ -51,15 +54,15 @@ export default function Navbar() {
                             <p className="text-sm font-bold text-gray-900 leading-none">
                                 Flood-Watch
                             </p>
-                            <p className="text-xs text-gray-400 leading-none">
-                                Cameroun
+                            <p className="text-xs text-gray-400 leading-none mt-1">
+                                {t('nav.cameroon')}
                             </p>
                         </div>
                     </Link>
 
                     {/* Desktop Nav */}
                     <div className="hidden md:flex items-center gap-1">
-                        {navLinks.map(({ href, label, icon: Icon }) => {
+                        {navLinks.map(({ href, key, icon: Icon }) => {
                             const active = pathname === href;
                             return (
                                 <Link
@@ -74,18 +77,21 @@ export default function Navbar() {
                                     )}
                                 >
                                     <Icon className="w-4 h-4" />
-                                    {label}
+                                    {t(key)}
                                 </Link>
                             );
                         })}
                     </div>
 
                     {/* Right Side */}
-                    <div className="hidden md:flex items-center gap-3">
+                    <div className="hidden md:flex items-center gap-4">
+                        {/* Language Toggle */}
+                        <LanguageToggle />
+
                         {/* Live indicator */}
                         <div className="flex items-center gap-1.5 text-xs text-gray-400">
                             <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-                            Maga live
+                            {t('nav.live')}
                         </div>
 
                         {/* Auth button */}
@@ -96,7 +102,7 @@ export default function Navbar() {
                              font-medium text-blue-700 bg-blue-50 rounded-lg
                              hover:bg-blue-100 transition-colors">
                                     <Shield className="w-3.5 h-3.5" />
-                                    Admin
+                                    {t('nav.admin')}
                                 </Link>
                                 <button
                                     onClick={handleLogout}
@@ -104,7 +110,7 @@ export default function Navbar() {
                              font-medium text-gray-500 hover:text-red-600
                              hover:bg-red-50 rounded-lg transition-colors">
                                     <LogOut className="w-3.5 h-3.5" />
-                                    Déconnexion
+                                    {t('nav.logout')}
                                 </button>
                             </div>
                         ) : (
@@ -113,23 +119,26 @@ export default function Navbar() {
                            font-medium text-gray-600 border border-gray-200
                            rounded-lg hover:bg-gray-50 transition-colors">
                                 <LogIn className="w-3.5 h-3.5" />
-                                Connexion
+                                {t('nav.login')}
                             </Link>
                         )}
                     </div>
 
                     {/* Mobile hamburger */}
-                    <button
-                        onClick={() => setOpen(!open)}
-                        className="md:hidden p-2 rounded-lg text-gray-500
-                       hover:bg-gray-100 transition-colors"
-                        aria-label="Menu"
-                    >
-                        {open
-                            ? <X className="w-5 h-5" />
-                            : <Menu className="w-5 h-5" />
-                        }
-                    </button>
+                    <div className="flex items-center gap-2 md:hidden">
+                        <LanguageToggle />
+                        <button
+                            onClick={() => setOpen(!open)}
+                            className="p-2 rounded-lg text-gray-500
+                           hover:bg-gray-100 transition-colors"
+                            aria-label="Menu"
+                        >
+                            {open
+                                ? <X className="w-5 h-5" />
+                                : <Menu className="w-5 h-5" />
+                            }
+                        </button>
+                    </div>
 
                 </div>
             </div>
@@ -139,7 +148,7 @@ export default function Navbar() {
                 <div className="md:hidden border-t border-gray-100 bg-white
                         animate-in slide-in-from-top-2 duration-200">
                     <div className="px-4 py-3 space-y-1">
-                        {navLinks.map(({ href, label, icon: Icon }) => {
+                        {navLinks.map(({ href, key, icon: Icon }) => {
                             const active = pathname === href;
                             return (
                                 <Link
@@ -155,7 +164,7 @@ export default function Navbar() {
                                     )}
                                 >
                                     <Icon className="w-4 h-4" />
-                                    {label}
+                                    {t(key)}
                                 </Link>
                             );
                         })}
@@ -165,15 +174,15 @@ export default function Navbar() {
                                 <>
                                     <Link href="/admin" onClick={() => setOpen(false)}
                                         className="flex items-center gap-3 px-3 py-2.5 rounded-xl
-                               text-sm font-medium text-blue-700 hover:bg-blue-50">
+                                text-sm font-medium text-blue-700 hover:bg-blue-50">
                                         <Shield className="w-4 h-4" />
-                                        Tableau de bord Admin
+                                        {t('nav.adminDashboard')}
                                     </Link>
                                     <button onClick={() => { handleLogout(); setOpen(false); }}
                                         className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl
-                               text-sm font-medium text-red-600 hover:bg-red-50">
+                                text-sm font-medium text-red-600 hover:bg-red-50">
                                         <LogOut className="w-4 h-4" />
-                                        Déconnexion
+                                        {t('nav.logout')}
                                     </button>
                                 </>
                             ) : (
@@ -181,7 +190,7 @@ export default function Navbar() {
                                     className="flex items-center gap-3 px-3 py-2.5 rounded-xl
                              text-sm font-medium text-gray-600 hover:bg-gray-50">
                                     <LogIn className="w-4 h-4" />
-                                    Connexion Administration
+                                    {t('nav.loginAdmin')}
                                 </Link>
                             )}
                         </div>

@@ -18,6 +18,7 @@ import {
     CloudRain, Droplets, RefreshCw, Bell,
     BarChart3, Cpu, Wifi,
 } from 'lucide-react';
+import { useLanguage } from '@/lib/LanguageContext';
 import { cn } from '@/lib/utils';
 
 // ── API helpers ───────────────────────────────────────────────────────────────
@@ -28,6 +29,7 @@ const dispatchManualAlert = (data: {
 }) => apiClient.post('/admin/alerts/dispatch/', data).then(r => r.data);
 
 export default function AdminPage() {
+    const { t, locale } = useLanguage();
     const queryClient = useQueryClient();
 
     // Form state for manual alert
@@ -52,7 +54,7 @@ export default function AdminPage() {
     const alertMutation = useMutation({
         mutationFn: dispatchManualAlert,
         onSuccess: (data) => {
-            toast.success(`Alerte envoyée à ${data.recipients} abonné(s)`);
+            toast.success(t('admin.toast.success', { val: data.recipients }));
             setMessageFr('');
             setMessageEn('');
             setShowConfirm(false);
@@ -60,14 +62,14 @@ export default function AdminPage() {
             queryClient.invalidateQueries({ queryKey: ['risk-current'] });
         },
         onError: () => {
-            toast.error('Erreur lors de l\'envoi de l\'alerte');
+            toast.error(t('admin.toast.error'));
             setShowConfirm(false);
         },
     });
 
     function handleDispatch() {
         if (!messageFr.trim()) {
-            toast.error('Le message en français est requis');
+            toast.error(t('admin.dispatch.msg_fr_required'));
             return;
         }
         alertMutation.mutate({
@@ -77,8 +79,10 @@ export default function AdminPage() {
         });
     }
 
+    const riskBadgeLabel = (lvl: RiskLevel) => locale === 'fr' ? RISK_CONFIG[lvl].labelFr : RISK_CONFIG[lvl].label;
+
     const currentRisk = risk || { risk_level: 'low' as RiskLevel, probability: 0 };
-    const cfg = RISK_CONFIG[currentRisk.risk_level as RiskLevel];
+    const cfg = RISK_CONFIG[currentRisk.risk_level as RiskLevel] || RISK_CONFIG.low;
 
     return (
         <div className="min-h-screen bg-slate-50">
@@ -91,10 +95,10 @@ export default function AdminPage() {
                     <div>
                         <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
                             <Shield className="w-6 h-6 text-blue-600" />
-                            Tableau de bord — Administration
+                            {t('admin.title')}
                         </h1>
                         <p className="text-sm text-gray-400 mt-1">
-                            Panneau de contrôle pour les autorités — Flood-Watch Cameroun
+                            {t('admin.desc')}
                         </p>
                     </div>
                     <button
@@ -104,7 +108,7 @@ export default function AdminPage() {
                        hover:bg-gray-50 transition-colors"
                     >
                         <RefreshCw className="w-4 h-4" />
-                        Actualiser
+                        {t('admin.refresh')}
                     </button>
                 </div>
 
@@ -113,29 +117,29 @@ export default function AdminPage() {
                     <AdminKPI
                         icon={<AlertTriangle className="w-5 h-5 text-orange-500" />}
                         bg="bg-orange-50"
-                        label="Risque actuel"
-                        value={cfg.labelFr}
-                        subtext={`${(currentRisk.probability * 100).toFixed(0)}% probabilité`}
+                        label={t('admin.kpi.risk')}
+                        value={locale === 'fr' ? cfg.labelFr : cfg.label}
+                        subtext={t('admin.kpi.probability', { val: (currentRisk.probability * 100).toFixed(0) })}
                         highlight={currentRisk.risk_level === 'critical' || currentRisk.risk_level === 'high'}
                     />
                     <AdminKPI
                         icon={<Users className="w-5 h-5 text-purple-500" />}
                         bg="bg-purple-50"
-                        label="Abonnés actifs"
+                        label={t('admin.kpi.subscribers')}
                         value={formatNumber(subs?.count ?? 0)}
-                        subtext="Vérifiés et actifs"
+                        subtext={t('admin.kpi.subscribers_sub')}
                     />
                     <AdminKPI
                         icon={<Bell className="w-5 h-5 text-blue-500" />}
                         bg="bg-blue-50"
-                        label="Alertes envoyées"
+                        label={t('admin.kpi.alerts')}
                         value={String(alerts.length)}
-                        subtext="Total historique"
+                        subtext={t('admin.kpi.alerts_sub')}
                     />
                     <AdminKPI
                         icon={<CloudRain className="w-5 h-5 text-teal-500" />}
                         bg="bg-teal-50"
-                        label="Pluie (7j)"
+                        label={t('admin.kpi.rain')}
                         value={rainfall[0] ? `${rainfall[0].cumulative_7d.toFixed(0)} mm` : '—'}
                         subtext="Cumul 7 jours"
                     />
@@ -151,17 +155,16 @@ export default function AdminPage() {
                             <h2 className="text-base font-semibold text-gray-900 mb-1
                              flex items-center gap-2">
                                 <Send className="w-4 h-4 text-blue-600" />
-                                Déclencher une alerte manuelle
+                                {t('admin.dispatch.title')}
                             </h2>
                             <p className="text-xs text-gray-400 mb-5">
-                                Envoyez immédiatement une alerte à tous les abonnés actifs.
-                                Action irréversible — à utiliser avec précaution.
+                                {t('admin.dispatch.desc')}
                             </p>
 
                             {/* Risk Level Selector */}
                             <div className="mb-4">
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Niveau de risque
+                                    {t('admin.dispatch.risk')}
                                 </label>
                                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                                     {(['low', 'medium', 'high', 'critical'] as RiskLevel[]).map((lvl) => {
@@ -178,7 +181,7 @@ export default function AdminPage() {
                                                         : 'border-gray-200 text-gray-400 hover:border-gray-300'
                                                 )}
                                             >
-                                                {c.icon} {c.labelFr}
+                                                {c.icon} {riskBadgeLabel(lvl)}
                                             </button>
                                         );
                                     })}
@@ -188,7 +191,7 @@ export default function AdminPage() {
                             {/* French Message */}
                             <div className="mb-4">
                                 <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                                    Message (Français) <span className="text-red-500">*</span>
+                                    {t('admin.dispatch.msg_fr')}
                                 </label>
                                 <textarea
                                     value={messageFr}
@@ -209,7 +212,7 @@ export default function AdminPage() {
                             {/* English Message */}
                             <div className="mb-5">
                                 <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                                    Message (English) — optionnel
+                                    {t('admin.dispatch.msg_en')}
                                 </label>
                                 <textarea
                                     value={messageEn}
@@ -233,14 +236,14 @@ export default function AdminPage() {
                                 )}>
                                     <p className="font-semibold text-gray-700 mb-1 text-xs uppercase
                                 tracking-wide">
-                                        Aperçu SMS — {subs?.count ?? 0} destinataires
+                                        {t('admin.dispatch.preview', { val: subs?.count ?? 0 })}
                                     </p>
                                     <p className={cn('font-medium', RISK_CONFIG[alertLevel].textColor)}>
-                                        [FLOOD-WATCH] ALERTE {RISK_CONFIG[alertLevel].labelFr.toUpperCase()}
+                                        {t('admin.dispatch.sms_alert')}{riskBadgeLabel(alertLevel).toUpperCase()}
                                     </p>
                                     <p className="text-gray-600 mt-1">{messageFr}</p>
                                     <p className="text-gray-400 text-xs mt-1">
-                                        Zone: Maga, Far North Cameroun · floodwatch.cm
+                                        {t('admin.dispatch.sms_footer')}
                                     </p>
                                 </div>
                             )}
@@ -250,7 +253,7 @@ export default function AdminPage() {
                                 <button
                                     onClick={() => {
                                         if (!messageFr.trim()) {
-                                            toast.error('Le message en français est requis');
+                                            toast.error(t('admin.dispatch.msg_fr_required'));
                                             return;
                                         }
                                         setShowConfirm(true);
@@ -262,18 +265,16 @@ export default function AdminPage() {
                              flex items-center justify-center gap-2"
                                 >
                                     <Send className="w-4 h-4" />
-                                    Envoyer l&apos;alerte à {subs?.count ?? 0} abonné(s)
+                                    {t('admin.dispatch.btn_send', { val: subs?.count ?? 0 })}
                                 </button>
                             ) : (
                                 <div className="space-y-3">
                                     <div className="p-4 bg-red-50 border border-red-200 rounded-xl">
                                         <p className="text-sm font-semibold text-red-800 mb-1">
-                                            ⚠️ Confirmation requise
+                                            {t('admin.dispatch.confirm_title')}
                                         </p>
                                         <p className="text-sm text-red-700">
-                                            Cette alerte sera envoyée immédiatement à{' '}
-                                            <strong>{subs?.count ?? 0} abonné(s)</strong> par SMS et email.
-                                            Cette action ne peut pas être annulée.
+                                            {t('admin.dispatch.confirm_desc', { val: subs?.count ?? 0 })}
                                         </p>
                                     </div>
                                     <div className="flex gap-3">
@@ -289,12 +290,12 @@ export default function AdminPage() {
                                                 <>
                                                     <div className="w-4 h-4 border-2 border-white/30
                                           border-t-white rounded-full animate-spin" />
-                                                    Envoi en cours...
+                                                    {t('admin.dispatch.sending')}
                                                 </>
                                             ) : (
                                                 <>
                                                     <CheckCircle className="w-4 h-4" />
-                                                    Confirmer et envoyer
+                                                    {t('admin.dispatch.confirm_btn')}
                                                 </>
                                             )}
                                         </button>
@@ -303,7 +304,7 @@ export default function AdminPage() {
                                             className="flex-1 py-3 bg-gray-100 text-gray-700 rounded-xl
                                  font-semibold text-sm hover:bg-gray-200 transition-colors"
                                         >
-                                            Annuler
+                                            {t('admin.dispatch.cancel')}
                                         </button>
                                     </div>
                                 </div>
@@ -315,7 +316,7 @@ export default function AdminPage() {
                             <h2 className="text-base font-semibold text-gray-900 mb-4
                              flex items-center gap-2">
                                 <Activity className="w-4 h-4 text-green-600" />
-                                Santé du système
+                                {t('admin.health.title')}
                             </h2>
 
                             {healthLoading ? (
@@ -328,55 +329,51 @@ export default function AdminPage() {
                                 <div className="space-y-3">
                                     <HealthRow
                                         icon={<Cpu className="w-4 h-4 text-blue-500" />}
-                                        label="Modèle ML actif"
-                                        value={health.current_risk?.model || 'Non défini'}
+                                        label={t('admin.health.model')}
+                                        value={health.current_risk?.model || t('hist.not_specified')}
                                         status="ok"
                                     />
                                     <HealthRow
                                         icon={<Database className="w-4 h-4 text-teal-500" />}
-                                        label="Dernier fetch satellite"
+                                        label={t('admin.health.satellite')}
                                         value={health.last_satellite_fetch?.date
-                                            ? timeAgo(health.last_satellite_fetch.date)
-                                            : 'Jamais'}
+                                            ? timeAgo(health.last_satellite_fetch.date, locale)
+                                            : t('admin.health.satellite_never')}
                                         status={health.last_satellite_fetch?.status === 'success'
                                             ? 'ok' : 'warn'}
                                     />
                                     <HealthRow
                                         icon={<CloudRain className="w-4 h-4 text-blue-500" />}
-                                        label="Dernière donnée pluie"
+                                        label={t('admin.health.rain')}
                                         value={health.latest_rainfall_date
                                             ? formatDate(health.latest_rainfall_date)
-                                            : 'Aucune'}
+                                            : t('admin.health.rain_none')}
                                         status="ok"
                                     />
                                     <HealthRow
                                         icon={<Droplets className="w-4 h-4 text-teal-500" />}
-                                        label="Dernière donnée lac"
+                                        label={t('admin.health.lake')}
                                         value={health.latest_water_date
                                             ? formatDate(health.latest_water_date)
-                                            : 'Aucune'}
+                                            : t('admin.health.lake_none')}
                                         status="ok"
                                     />
                                     <HealthRow
                                         icon={<BarChart3 className="w-4 h-4 text-purple-500" />}
-                                        label="Total événements historiques"
+                                        label={t('admin.health.events')}
                                         value={String(health.total_flood_events || 0)}
                                         status="ok"
                                     />
                                     <HealthRow
                                         icon={<Users className="w-4 h-4 text-purple-500" />}
-                                        label="Abonnés actifs"
+                                        label={t('admin.health.subscribers')}
                                         value={formatNumber(health.active_subscribers || 0)}
                                         status="ok"
                                     />
                                 </div>
                             ) : (
                                 <div className="text-center py-6 text-gray-400 text-sm">
-                                    Impossible de charger les données système.
-                                    <br />
-                                    <span className="text-xs">
-                                        Vérifiez que vous êtes connecté en tant qu&apos;admin.
-                                    </span>
+                                    {t('admin.health.error')}
                                 </div>
                             )}
                         </div>
@@ -393,24 +390,24 @@ export default function AdminPage() {
                         )}>
                             <p className="text-xs font-semibold uppercase tracking-widest
                             text-gray-500 mb-3">
-                                Risque actuel
+                                {t('admin.kpi.risk')}
                             </p>
                             <div className="text-5xl mb-2">{cfg.icon}</div>
                             <p className={cn('text-2xl font-black', cfg.textColor)}>
-                                {cfg.labelFr}
+                                {riskBadgeLabel(currentRisk.risk_level)}
                             </p>
                             <p className="text-3xl font-bold text-gray-900 mt-1">
                                 {(currentRisk.probability * 100).toFixed(0)}%
                             </p>
                             <p className="text-xs text-gray-400 mt-2">
                                 {risk?.assessed_at
-                                    ? `Évalué ${timeAgo(risk.assessed_at)}`
+                                    ? `${t('db.updated')} ${timeAgo(risk.assessed_at, locale)}`
                                     : 'En attente...'}
                             </p>
                             {risk?.is_manual_override && (
                                 <span className="inline-block mt-2 text-xs bg-yellow-100
                                  text-yellow-700 px-2 py-0.5 rounded-full">
-                                    ⚡ Déclenchement manuel
+                                    ⚡ {locale === 'fr' ? 'Déclenchement manuel' : 'Manual Trigger'}
                                 </span>
                             )}
                         </div>
@@ -420,13 +417,13 @@ export default function AdminPage() {
                             <h2 className="text-sm font-semibold text-gray-900 mb-3
                              flex items-center gap-2">
                                 <Clock className="w-4 h-4 text-gray-400" />
-                                Alertes récentes
+                                {t('admin.recent.title')}
                             </h2>
 
                             {alerts.length === 0 ? (
                                 <div className="text-center py-6">
                                     <Bell className="w-8 h-8 text-gray-200 mx-auto mb-2" />
-                                    <p className="text-xs text-gray-400">Aucune alerte envoyée</p>
+                                    <p className="text-xs text-gray-400">{t('admin.recent.none')}</p>
                                 </div>
                             ) : (
                                 <div className="space-y-2.5 max-h-96 overflow-y-auto pr-1">
@@ -445,11 +442,11 @@ export default function AdminPage() {
                                                         {ac.icon} {ac.labelFr}
                                                     </span>
                                                     <span className="text-gray-400 text-xs">
-                                                        {timeAgo(alert.triggered_at)}
+                                                        {timeAgo(alert.triggered_at, locale)}
                                                     </span>
                                                 </div>
                                                 <p className="text-gray-600 line-clamp-2 leading-relaxed">
-                                                    {alert.message_fr}
+                                                    {locale === 'fr' ? alert.message_fr : (alert.message_en || alert.message_fr)}
                                                 </p>
                                                 <div className="flex items-center gap-3 mt-1.5
                                         text-gray-400">
@@ -472,25 +469,25 @@ export default function AdminPage() {
                         {/* Quick Stats */}
                         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
                             <h2 className="text-sm font-semibold text-gray-900 mb-3">
-                                Données récentes
+                                {t('admin.recent.stats')}
                             </h2>
                             <div className="space-y-2">
                                 <QuickStat
-                                    label="Pluie cumulée 30j"
+                                    label={t('admin.recent.rain_30d')}
                                     value={rainfall[0]
                                         ? `${rainfall[0].cumulative_30d.toFixed(0)} mm`
                                         : '—'}
                                     icon="🌧️"
                                 />
                                 <QuickStat
-                                    label="Lac Maga"
+                                    label={t('admin.recent.lake_maga')}
                                     value={water[0]
                                         ? `${water[0].water_area_km2.toFixed(0)} km²`
                                         : '—'}
                                     icon="💧"
                                 />
                                 <QuickStat
-                                    label="Remplissage"
+                                    label={t('admin.recent.filling')}
                                     value={water[0]
                                         ? `${water[0].fill_percentage.toFixed(0)}%`
                                         : '—'}

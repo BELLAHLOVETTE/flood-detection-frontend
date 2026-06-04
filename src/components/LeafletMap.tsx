@@ -14,6 +14,7 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import type { RiskLevel } from '@/types';
 import { RISK_CONFIG } from '@/types';
+import { useLanguage } from '@/lib/LanguageContext';
 
 // Fix Leaflet's default icon broken by webpack
 function fixLeafletIcons() {
@@ -25,6 +26,8 @@ function fixLeafletIcons() {
         shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
     });
 }
+
+const FLOOD_BLUE = 'var(--color-blue-600)';
 
 interface Village {
     name: string;
@@ -68,6 +71,8 @@ function MapController() {
 }
 
 export default function LeafletMap({ floodGeoJSON, villages }: Props) {
+    const { t, locale } = useLanguage();
+
     useEffect(() => {
         fixLeafletIcons();
     }, []);
@@ -100,12 +105,12 @@ export default function LeafletMap({ floodGeoJSON, villages }: Props) {
 
                 {/* Flood extent overlay */}
                 {floodGeoJSON && floodGeoJSON.features?.length > 0 && (
-                    <LayersControl.Overlay checked name="Étendue inondation">
+                    <LayersControl.Overlay checked name={t('map.overlay.flood')}> {/* */}
                         <GeoJSON
                             data={floodGeoJSON}
                             style={{
-                                color: '#2E75B6',
-                                fillColor: '#2E75B6',
+                                color: FLOOD_BLUE,
+                                fillColor: FLOOD_BLUE,
                                 fillOpacity: 0.45,
                                 weight: 1.5,
                             }}
@@ -128,14 +133,15 @@ export default function LeafletMap({ floodGeoJSON, villages }: Props) {
                                 {village.name}
                             </p>
                             <p style={{ fontSize: '12px', color: '#6b7280' }}>
-                                Niveau de risque:
+                                {t('map.popup.risk')} {/* */}
                             </p>
                             <p style={{
                                 fontSize: '13px',
                                 fontWeight: '600',
                                 color: RISK_CONFIG[village.risk].color,
                             }}>
-                                {RISK_CONFIG[village.risk].icon} {RISK_CONFIG[village.risk].labelFr}
+                                {RISK_CONFIG[village.risk].icon}{' '}
+                                {locale === 'fr' ? RISK_CONFIG[village.risk].labelFr : RISK_CONFIG[village.risk].label}
                             </p>
                             <p style={{ fontSize: '11px', color: '#9ca3af', marginTop: '4px' }}>
                                 {village.lat.toFixed(3)}°N, {village.lng.toFixed(3)}°E

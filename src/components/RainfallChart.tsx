@@ -13,19 +13,23 @@ import {
     Legend,
 } from 'recharts';
 import { format, parseISO } from 'date-fns';
-import { fr } from 'date-fns/locale';
+import { fr, enUS } from 'date-fns/locale';
 import type { RainfallReading } from '@/types';
+import { useLanguage } from '@/lib/LanguageContext';
 
 interface Props {
     data: RainfallReading[];
 }
 
 export default function RainfallChart({ data }: Props) {
+    const { locale, t } = useLanguage();
+    const dateLocale = locale === 'fr' ? fr : enUS;
+
     // Reverse so oldest date is on left, newest on right
     const chartData = [...data].reverse().map((r) => ({
-        date: format(parseISO(r.date), 'd MMM', { locale: fr }),
-        'Pluie': parseFloat(r.rainfall_mm.toFixed(1)),
-        '7j cumul': parseFloat(r.cumulative_7d.toFixed(1)),
+        date: format(parseISO(r.date), 'd MMM', { locale: dateLocale }),
+        rain: parseFloat(r.rainfall_mm.toFixed(1)),
+        sevenDayCumul: parseFloat(r.cumulative_7d.toFixed(1)),
     }));
 
     return (
@@ -53,7 +57,7 @@ export default function RainfallChart({ data }: Props) {
                     ]}
                     contentStyle={{
                         borderRadius: '8px',
-                        border: '1px solid #e5e7eb',
+                        border: '1px solid var(--color-gray-200)',
                         fontSize: '12px',
                     }}
                 />
@@ -66,21 +70,23 @@ export default function RainfallChart({ data }: Props) {
                     stroke="#f97316"
                     strokeDasharray="4 4"
                     label={{
-                        value: 'Seuil 80mm',
+                        value: t('chart.threshold'),
                         position: 'right',
                         fontSize: 10,
                         fill: '#f97316',
                     }}
                 />
                 <Bar
-                    dataKey="Pluie"
+                    dataKey="rain"
+                    name={t('chart.rain')}
                     fill="#2E75B6"
                     opacity={0.8}
                     radius={[2, 2, 0, 0]}
                 />
                 <Line
                     type="monotone"
-                    dataKey="7j cumul"
+                    dataKey="sevenDayCumul"
+                    name={t('chart.7d_cumul')}
                     stroke="#1ABC9C"
                     strokeWidth={2}
                     dot={false}

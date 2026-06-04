@@ -10,15 +10,15 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: 'Flood-Watch Cameroun',
-  description: 'Système de détection des inondations et d\'alerte précoce — Maga, Extrême-Nord',
-  keywords: 'inondation, Maga, Cameroun, alerte, satellite, Sentinel-1',
+  title: 'Flood-Watch Cameroon',
+  description: 'Flood detection and early warning system — Maga, Far North region',
+  keywords: 'flood, Maga, Cameroon, alert, satellite, Sentinel-1',
   authors: [{ name: 'Flood-Watch System' }],
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="fr" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
       <body className={`${inter.variable} font-sans`}>
         <Providers>
           {children}

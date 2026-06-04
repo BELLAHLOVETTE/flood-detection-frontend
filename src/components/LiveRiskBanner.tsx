@@ -4,12 +4,14 @@ import { useEffect, useRef, useState } from 'react';
 import { RISK_CONFIG, type RiskAssessment, type RiskLevel } from '@/types';
 import { AlertTriangle, Wifi, WifiOff } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useLanguage } from '@/lib/LanguageContext';
 
 const WS_URL = process.env.NEXT_PUBLIC_WS_URL || 'ws://127.0.0.1:8000/ws/risk/';
 
 interface Props { initial: RiskAssessment; }
 
 export function LiveRiskBanner({ initial }: Props) {
+    const { t } = useLanguage();
     const [risk, setRisk] = useState(initial);
     const [connected, setConnected] = useState(false);
     const [justUpdated, setJustUpdated] = useState(false);
@@ -82,14 +84,10 @@ export function LiveRiskBanner({ initial }: Props) {
                             risk.risk_level === 'medium' && 'text-yellow-800',
                             risk.risk_level === 'low' && 'text-green-700',
                         )}>
-                            {risk.risk_level === 'critical' &&
-                                '🔴 ALERTE CRITIQUE — Risque élevé d\'inondation détecté à Maga'}
-                            {risk.risk_level === 'high' &&
-                                '🟠 ALERTE ÉLEVÉE — Surveillance renforcée requise à Maga'}
-                            {risk.risk_level === 'medium' &&
-                                '🟡 Risque modéré — Restez informés des conditions météo'}
-                            {risk.risk_level === 'low' &&
-                                '🟢 Situation normale — Aucun risque immédiat détecté'}
+                            {risk.risk_level === 'critical' && t('banner.critical')}
+                            {risk.risk_level === 'high' && t('banner.high')}
+                            {risk.risk_level === 'medium' && t('banner.medium')}
+                            {risk.risk_level === 'low' && t('banner.low')}
                         </p>
                     </div>
 
@@ -101,11 +99,11 @@ export function LiveRiskBanner({ initial }: Props) {
                             : 'text-gray-400'
                     )}>
                         {connected
-                            ? <><Wifi className="w-3 h-3" /> En direct</>
-                            : <><WifiOff className="w-3 h-3" /> Hors ligne</>
+                            ? <><Wifi className="w-3 h-3" /> {t('banner.live')}</>
+                            : <><WifiOff className="w-3 h-3" /> {t('banner.offline')}</>
                         }
                         {justUpdated && (
-                            <span className="ml-1 text-green-400 font-medium">• Mis à jour</span>
+                            <span className="ml-1 text-green-400 font-medium">• {t('banner.updated')}</span>
                         )}
                     </div>
 
