@@ -60,18 +60,18 @@ export default function LoginPage() {
                             justify-center mx-auto mb-4">
                             <Droplets className="w-9 h-9 text-white" />
                         </div>
-                        <h1 className="text-2xl font-bold text-white">Flood-Watch</h1>
-                        <p className="text-blue-200 text-sm mt-1">
+                        <h1 className="text-2xl font-bold text-white" suppressHydrationWarning>Flood-Watch</h1>
+                        <p className="text-blue-200 text-sm mt-1" suppressHydrationWarning>
                             Système d&apos;alerte précoce — Cameroun
                         </p>
                     </div>
 
                     {/* Form */}
                     <div className="p-8">
-                        <h2 className="text-xl font-bold text-gray-900 mb-1">
+                        <h2 className="text-xl font-bold text-gray-900 mb-1" suppressHydrationWarning>
                             Connexion Administration
                         </h2>
-                        <p className="text-sm text-gray-500 mb-6">
+                        <p className="text-sm text-gray-500 mb-6" suppressHydrationWarning>
                             Accès réservé aux autorités et administrateurs
                         </p>
 
@@ -87,7 +87,7 @@ export default function LoginPage() {
 
                             {/* Username */}
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                                <label className="block text-sm font-medium text-gray-700 mb-1.5" suppressHydrationWarning>
                                     Nom d&apos;utilisateur
                                 </label>
                                 <div className="relative">
@@ -109,7 +109,7 @@ export default function LoginPage() {
 
                             {/* Password */}
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                                <label className="block text-sm font-medium text-gray-700 mb-1.5" suppressHydrationWarning>
                                     Mot de passe
                                 </label>
                                 <div className="relative">
@@ -176,7 +176,7 @@ export default function LoginPage() {
                 </div>
 
                 {/* Note */}
-                <p className="text-center text-xs text-slate-500 mt-4">
+                <p className="text-center text-xs text-slate-500 mt-4" suppressHydrationWarning>
                     Accès public disponible sur la page d&apos;accueil sans connexion
                 </p>
 
