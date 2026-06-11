@@ -73,13 +73,13 @@ export default function MapPage() {
             <header className="relative overflow-hidden border-b border-slate-200/60 bg-gradient-to-br from-sky-600 via-cyan-600 to-teal-600">
                 <div className="absolute inset-0 opacity-20 [background-image:radial-gradient(circle_at_1px_1px,white_1px,transparent_0)] [background-size:24px_24px]" />
                 <div className="relative mx-auto max-w-7xl px-6 py-12 sm:py-16">
-                    <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-                        <div className="max-w-2xl">
+                    <div className="flex flex-col items-center justify-center text-center gap-8">
+                        <div className="max-w-3xl flex flex-col items-center">
                             <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-xs font-medium text-white backdrop-blur">
                                 <Droplets className="h-3.5 w-3.5" />
                                 Maga · Cameroon
                             </div>
-                            <h1 className="flex items-center gap-3 text-4xl font-bold tracking-tight text-white sm:text-5xl">
+                            <h1 className="flex items-center justify-center gap-3 text-4xl font-bold tracking-tight text-white sm:text-5xl">
                                 <MapPin className="h-9 w-9" />
                                 {t('map.title')}
                             </h1>

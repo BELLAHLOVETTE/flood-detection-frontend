@@ -1,245 +1,330 @@
 // src/app/signup/page.tsx
 'use client';
-
-import { useState, useMemo } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import Link from 'next/link';
+import { registerUser } from '@/lib/api';
 import toast from 'react-hot-toast';
-import { signup } from '@/lib/auth';
-import { useLanguage } from '@/lib/LanguageContext';
 import {
-    Eye, EyeOff, Lock, User, Mail, Loader2, ArrowLeft, ShieldCheck,
+    Eye, EyeOff, AlertTriangle, Lock,
+    User, Mail, Building2, CheckCircle, Shield,
 } from 'lucide-react';
-import { AuthShell, AuthTabs, Field, ErrorBanner, Divider } from '@/app/login/page';
+
+interface FormState {
+    username: string;
+    password: string;
+    confirmPassword: string;
+    email: string;
+    organisation: string;
+}
 
 export default function SignupPage() {
-    const router = useRouter();
-    const { t } = useLanguage();
-
-    const [fullName, setFullName] = useState('');
-    const [username, setUsername] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
+    const [form, setForm] = useState<FormState>({
+        username: '', password: '', confirmPassword: '',
+        email: '', organisation: '',
+    });
     const [showPw, setShowPw] = useState(false);
-    const [accept, setAccept] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const [success, setSuccess] = useState(false);
 
-    const strength = useMemo(() => scorePassword(password), [password]);
+    function update(field: keyof FormState, value: string) {
+        setForm(prev => ({ ...prev, [field]: value }));
+        if (error) setError('');
+    }
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
         setError('');
 
-        if (!fullName.trim() || !username.trim() || !email.trim() || !password) {
-            return setError(t('signup.error.fields') || 'Please fill in all required fields.');
+        // Client-side validation
+        if (!form.username.trim()) {
+            setError('Username is required.'); return;
         }
-        if (!/^\S+@\S+\.\S+$/.test(email)) {
-            return setError(t('signup.error.email') || 'Please enter a valid email address.');
+        if (!form.email.trim()) {
+            setError('Email is required.'); return;
         }
-        if (password.length < 8) {
-            return setError(t('signup.error.password_short') || 'Password must be at least 8 characters.');
+        if (!form.password) {
+            setError('Password is required.'); return;
         }
-        if (password !== confirmPassword) {
-            return setError(t('signup.error.password_mismatch') || 'Passwords do not match.');
+        if (form.password.length < 8) {
+            setError('Password must be at least 8 characters.'); return;
         }
-        if (!accept) {
-            return setError(t('signup.error.terms') || 'Please accept the terms to continue.');
+        if (form.password !== form.confirmPassword) {
+            setError('Passwords do not match.'); return;
         }
 
         setLoading(true);
         try {
-            const result = await signup({ full_name: fullName, username, email, password });
-            if (result.success) {
-                toast.success(t('signup.toast.success') || 'Account created — welcome!');
-                router.push('/login');
-            } else {
-                setError(result.error || t('signup.error.failed') || 'Could not create account.');
-                setLoading(false);
-            }
-        } catch {
-            setError(t('signup.error.failed') || 'Could not create account.');
+            await registerUser({
+                username: form.username.trim(),
+                password: form.password,
+                email: form.email.trim(),
+                organisation: form.organisation.trim(),
+            });
+            setSuccess(true);
+            toast.success('Account created successfully!');
+        } catch (err: unknown) {
+            const axiosErr = err as {
+                response?: { data?: { error?: string } }
+            };
+            setError(
+                axiosErr?.response?.data?.error ||
+                'An error occurred. Please try again.'
+            );
+        } finally {
             setLoading(false);
         }
     }
 
-    return (
-        <AuthShell>
-            <AuthTabs active="signup" />
+    // Success screen
+    if (success) {
+        return (
+            <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-950
+                      to-slate-900 flex items-center justify-center p-4">
+                <div className="bg-white rounded-3xl shadow-2xl p-10 max-w-md w-full text-center">
+                    <div className="w-20 h-20 bg-green-100 rounded-full flex items-center
+                          justify-center mx-auto mb-6">
+                        <CheckCircle className="w-10 h-10 text-green-600" />
+                    </div>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-3">
+                        Account Created!
+                    </h2>
+                    <p className="text-gray-500 text-sm leading-relaxed mb-6">
+                        Your account has been created successfully. An administrator
+                        must approve your access before you can log into the
+                        administration dashboard.
+                    </p>
+                    <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6 text-left">
+                        <p className="text-sm font-semibold text-blue-900 mb-1">
+                            What happens next?
+                        </p>
+                        <ul className="text-sm text-blue-700 space-y-1 list-disc list-inside">
+                            <li>An admin will review your account</li>
+                            <li>You will receive an email when approved</li>
+                            <li>You can then log in to the admin dashboard</li>
+                        </ul>
+                    </div>
+                    <div className="space-y-3">
+                        <Link href="/login"
+                            className="block w-full py-3 bg-blue-600 text-white rounded-xl
+                         font-semibold text-sm hover:bg-blue-700 transition-colors">
+                            Go to Login
+                        </Link>
+                        <Link href="/"
+                            className="block w-full py-3 bg-gray-100 text-gray-700 rounded-xl
+                         font-semibold text-sm hover:bg-gray-200 transition-colors">
+                            View Public Dashboard
+                        </Link>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
-            <div className="mt-6">
-                <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
-                    {t('signup.title') || 'Create your account'}
-                </h1>
-                <p className="mt-1 text-sm text-slate-500">
-                    {t('signup.desc') || 'Join Flood-Watch and stay informed.'}
-                </p>
+    return (
+        <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-950
+                    to-slate-900 flex items-center justify-center p-4">
+
+            {/* Background glow effects */}
+            <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                <div className="absolute -top-40 -right-40 w-96 h-96 bg-blue-500/10
+                        rounded-full blur-3xl" />
+                <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-teal-500/10
+                        rounded-full blur-3xl" />
             </div>
 
-            {error && <ErrorBanner message={error} />}
+            <div className="w-full max-w-md relative">
+                <div className="bg-white/95 backdrop-blur-sm rounded-3xl shadow-2xl overflow-hidden">
 
-            <form onSubmit={handleSubmit} className="mt-6 space-y-4">
-                <Field
-                    id="fullName"
-                    label={t('signup.full_name') || 'Full name'}
-                    icon={<User className="h-4 w-4" />}
-                    value={fullName}
-                    onChange={setFullName}
-                    placeholder="Jane Doe"
-                    autoComplete="name"
-                />
-
-                <div className="grid sm:grid-cols-2 gap-4">
-                    <Field
-                        id="username"
-                        label={t('signup.username') || 'Username'}
-                        icon={<User className="h-4 w-4" />}
-                        value={username}
-                        onChange={setUsername}
-                        placeholder="janedoe"
-                        autoComplete="username"
-                    />
-                    <Field
-                        id="email"
-                        type="email"
-                        label={t('signup.email') || 'Email'}
-                        icon={<Mail className="h-4 w-4" />}
-                        value={email}
-                        onChange={setEmail}
-                        placeholder="you@email.com"
-                        autoComplete="email"
-                    />
-                </div>
-
-                {/* Password */}
-                <div>
-                    <label htmlFor="password" className="block text-xs font-semibold uppercase tracking-wide text-slate-500 mb-1.5">
-                        {t('signup.password') || 'Password'}
-                    </label>
-                    <div className="relative">
-                        <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-                        <input
-                            id="password"
-                            type={showPw ? 'text' : 'password'}
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            placeholder="••••••••"
-                            autoComplete="new-password"
-                            className="w-full pl-10 pr-12 py-3 border border-slate-200 rounded-xl text-sm bg-slate-50 focus:bg-white focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all"
-                        />
-                        <button
-                            type="button"
-                            onClick={() => setShowPw(!showPw)}
-                            className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
-                            aria-label={showPw ? 'Hide password' : 'Show password'}
-                        >
-                            {showPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                        </button>
+                    {/* Header */}
+                    <div className="bg-gradient-to-r from-blue-700 to-blue-900 p-8 text-center">
+                        <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center
+                            justify-center mx-auto mb-4">
+                            <Shield className="w-9 h-9 text-white" />
+                        </div>
+                        <h1 className="text-2xl font-bold text-white">Flood-Watch</h1>
+                        <p className="text-blue-200 text-sm mt-1">
+                            Create an authority account
+                        </p>
                     </div>
 
-                    {/* Strength meter */}
-                    {password && (
-                        <div className="mt-2">
-                            <div className="flex gap-1">
-                                {[0, 1, 2, 3].map((i) => (
-                                    <span
-                                        key={i}
-                                        className={`h-1.5 flex-1 rounded-full transition-colors ${i < strength.score ? strength.color : 'bg-slate-200'
-                                            }`}
-                                    />
-                                ))}
+                    <div className="p-8">
+                        <p className="text-sm text-gray-500 mb-6 leading-relaxed">
+                            Reserved for government officials, NGO staff, and researchers.
+                            Your account will be verified by a system administrator
+                            before access is granted.
+                        </p>
+
+                        {error && (
+                            <div className="mb-5 p-4 bg-red-50 border border-red-200
+                              rounded-xl flex items-start gap-3">
+                                <AlertTriangle className="w-4 h-4 text-red-500 mt-0.5 flex-shrink-0" />
+                                <p className="text-sm text-red-700">{error}</p>
                             </div>
-                            <p className={`mt-1 text-xs ${strength.textColor}`}>{strength.label}</p>
+                        )}
+
+                        <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+
+                            {/* Username */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                                    Username <span className="text-red-500">*</span>
+                                </label>
+                                <div className="relative">
+                                    <User className="absolute left-3.5 top-1/2 -translate-y-1/2
+                                   w-4 h-4 text-gray-400" />
+                                    <input
+                                        type="text"
+                                        value={form.username}
+                                        onChange={e => update('username', e.target.value)}
+                                        placeholder="john.doe"
+                                        autoComplete="username"
+                                        required
+                                        className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl
+                               text-sm bg-gray-50 focus:bg-white focus:outline-none
+                               focus:ring-2 focus:ring-blue-500 transition-all"
+                                    />
+                                </div>
+                            </div>
+
+                            {/* Email */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                                    Email address <span className="text-red-500">*</span>
+                                </label>
+                                <div className="relative">
+                                    <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2
+                                   w-4 h-4 text-gray-400" />
+                                    <input
+                                        type="email"
+                                        value={form.email}
+                                        onChange={e => update('email', e.target.value)}
+                                        placeholder="john@ministry.cm"
+                                        autoComplete="email"
+                                        required
+                                        className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl
+                               text-sm bg-gray-50 focus:bg-white focus:outline-none
+                               focus:ring-2 focus:ring-blue-500 transition-all"
+                                    />
+                                </div>
+                            </div>
+
+                            {/* Organisation */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                                    Organisation
+                                </label>
+                                <div className="relative">
+                                    <Building2 className="absolute left-3.5 top-1/2 -translate-y-1/2
+                                        w-4 h-4 text-gray-400" />
+                                    <input
+                                        type="text"
+                                        value={form.organisation}
+                                        onChange={e => update('organisation', e.target.value)}
+                                        placeholder="NADH, ONACC, Red Cross, University..."
+                                        className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl
+                               text-sm bg-gray-50 focus:bg-white focus:outline-none
+                               focus:ring-2 focus:ring-blue-500 transition-all"
+                                    />
+                                </div>
+                            </div>
+
+                            {/* Password */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                                    Password <span className="text-red-500">*</span>
+                                </label>
+                                <div className="relative">
+                                    <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2
+                                   w-4 h-4 text-gray-400" />
+                                    <input
+                                        type={showPw ? 'text' : 'password'}
+                                        value={form.password}
+                                        onChange={e => update('password', e.target.value)}
+                                        placeholder="Minimum 8 characters"
+                                        autoComplete="new-password"
+                                        required
+                                        className="w-full pl-10 pr-12 py-3 border border-gray-200 rounded-xl
+                               text-sm bg-gray-50 focus:bg-white focus:outline-none
+                               focus:ring-2 focus:ring-blue-500 transition-all"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowPw(!showPw)}
+                                        className="absolute right-3.5 top-1/2 -translate-y-1/2
+                               text-gray-400 hover:text-gray-600 transition-colors"
+                                    >
+                                        {showPw
+                                            ? <EyeOff className="w-4 h-4" />
+                                            : <Eye className="w-4 h-4" />
+                                        }
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* Confirm password */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                                    Confirm password <span className="text-red-500">*</span>
+                                </label>
+                                <div className="relative">
+                                    <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2
+                                   w-4 h-4 text-gray-400" />
+                                    <input
+                                        type="password"
+                                        value={form.confirmPassword}
+                                        onChange={e => update('confirmPassword', e.target.value)}
+                                        placeholder="Repeat your password"
+                                        autoComplete="new-password"
+                                        required
+                                        className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl
+                               text-sm bg-gray-50 focus:bg-white focus:outline-none
+                               focus:ring-2 focus:ring-blue-500 transition-all"
+                                    />
+                                </div>
+                            </div>
+
+                            <button
+                                type="submit"
+                                disabled={loading}
+                                className="w-full py-3 bg-gradient-to-r from-blue-600 to-blue-700
+                           text-white rounded-xl font-semibold text-sm
+                           hover:from-blue-700 hover:to-blue-800
+                           disabled:opacity-50 disabled:cursor-not-allowed
+                           transition-all shadow-lg shadow-blue-500/25
+                           flex items-center justify-center gap-2"
+                            >
+                                {loading ? (
+                                    <>
+                                        <div className="w-4 h-4 border-2 border-white/30 border-t-white
+                                    rounded-full animate-spin" />
+                                        Creating account...
+                                    </>
+                                ) : (
+                                    'Create Account'
+                                )}
+                            </button>
+
+                        </form>
+
+                        <div className="mt-6 text-center space-y-2">
+                            <p className="text-sm text-gray-500">
+                                Already have an account?{' '}
+                                <Link href="/login"
+                                    className="text-blue-600 font-medium hover:underline">
+                                    Sign in
+                                </Link>
+                            </p>
+                            <Link href="/"
+                                className="block text-xs text-gray-400 hover:text-blue-600
+                           transition-colors">
+                                ← Back to public dashboard
+                            </Link>
                         </div>
-                    )}
+
+                    </div>
                 </div>
-
-                <Field
-                    id="confirmPassword"
-                    type={showPw ? 'text' : 'password'}
-                    label={t('signup.confirm') || 'Confirm password'}
-                    icon={<Lock className="h-4 w-4" />}
-                    value={confirmPassword}
-                    onChange={setConfirmPassword}
-                    placeholder="••••••••"
-                    autoComplete="new-password"
-                />
-
-                {/* Terms */}
-                <label className="flex items-start gap-2.5 cursor-pointer select-none">
-                    <input
-                        type="checkbox"
-                        checked={accept}
-                        onChange={(e) => setAccept(e.target.checked)}
-                        className="mt-0.5 h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
-                    />
-                    <span className="text-xs text-slate-500 leading-relaxed">
-                        {t('signup.terms_prefix') || 'I agree to the'}{' '}
-                        <Link href="/terms" className="text-blue-600 hover:text-blue-700 font-medium">
-                            {t('signup.terms') || 'Terms of Service'}
-                        </Link>{' '}
-                        {t('signup.and') || 'and'}{' '}
-                        <Link href="/privacy" className="text-blue-600 hover:text-blue-700 font-medium">
-                            {t('signup.privacy') || 'Privacy Policy'}
-                        </Link>.
-                    </span>
-                </label>
-
-                <button
-                    type="submit"
-                    disabled={loading}
-                    className="w-full inline-flex items-center justify-center gap-2 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-semibold shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 hover:-translate-y-px transition-all disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:translate-y-0"
-                >
-                    {loading ? (
-                        <>
-                            <Loader2 className="h-4 w-4 animate-spin" />
-                            {t('signup.submitting') || 'Creating account…'}
-                        </>
-                    ) : (
-                        t('signup.submit') || 'Create Account'
-                    )}
-                </button>
-
-                <p className="flex items-center justify-center gap-1.5 text-xs text-slate-400">
-                    <ShieldCheck className="h-3.5 w-3.5" />
-                    {t('signup.secured') || 'Your data is encrypted and protected.'}
-                </p>
-            </form>
-
-            <Divider label={t('signup.or') || 'or'} />
-
-            <p className="text-center text-sm text-slate-500">
-                {t('signup.have_account') || 'Already have an account?'}{' '}
-                <Link href="/login" className="font-semibold text-blue-600 hover:text-blue-700">
-                    {t('signup.signin') || 'Sign in'}
-                </Link>
-            </p>
-
-            <div className="mt-6 text-center">
-                <Link href="/" className="inline-flex items-center gap-1.5 text-xs text-slate-400 hover:text-slate-600">
-                    <ArrowLeft className="h-3.5 w-3.5" />
-                    {t('login.back') || 'Back to site'}
-                </Link>
             </div>
-        </AuthShell>
+        </div>
     );
-}
-
-/* Password strength scoring */
-function scorePassword(pw: string) {
-    let score = 0;
-    if (pw.length >= 8) score++;
-    if (/[A-Z]/.test(pw) && /[a-z]/.test(pw)) score++;
-    if (/\d/.test(pw)) score++;
-    if (/[^A-Za-z0-9]/.test(pw)) score++;
-
-    const map = [
-        { label: 'Too short', color: 'bg-red-400', textColor: 'text-red-500' },
-        { label: 'Weak', color: 'bg-orange-400', textColor: 'text-orange-500' },
-        { label: 'Fair', color: 'bg-amber-400', textColor: 'text-amber-600' },
-        { label: 'Good', color: 'bg-lime-500', textColor: 'text-lime-600' },
-        { label: 'Strong', color: 'bg-emerald-500', textColor: 'text-emerald-600' },
-    ];
-    return { score, ...map[score] };
 }

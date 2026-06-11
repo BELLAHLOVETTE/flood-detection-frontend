@@ -85,3 +85,44 @@ export const verifyOTP = (sub_id: string, otp: string) =>
 
 export const getSystemHealth = () =>
     apiClient.get('/admin/health/').then(r => r.data);
+
+// ── FORECAST ──────────────────────────────────────────────────────────────────
+
+export interface ForecastDay {
+    forecast_date: string;
+    day_label: string;
+    predicted_mm?: number;
+    predicted_rain?: number;
+    probability?: number;
+    risk_level: string;
+    risk_color: string;
+    day_offset?: number;
+    source?: string;
+}
+
+export interface FloodRiskForecastResponse {
+    forecast: ForecastDay[];
+    peak_risk_day: ForecastDay;
+    water_level_km2: number | null;
+    generated_at: string;
+    model_used: string;
+}
+
+export const getRainfallForecast = (): Promise<{
+    source: string;
+    forecast: ForecastDay[];
+}> => apiClient.get('/forecast/rainfall/').then(r => r.data);
+
+export const getFloodRiskForecast =
+    (): Promise<FloodRiskForecastResponse> =>
+        apiClient.get('/forecast/flood-risk/').then(r => r.data);
+
+// ── AUTH REGISTER ─────────────────────────────────────────────────────────────
+
+export const registerUser = (data: {
+    username: string;
+    password: string;
+    email: string;
+    organisation: string;
+}): Promise<{ message: string; username: string; email: string }> =>
+    apiClient.post('/auth/register/', data).then(r => r.data);

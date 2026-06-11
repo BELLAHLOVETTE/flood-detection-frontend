@@ -1,4 +1,3 @@
-// src/app/dashboard/page.tsx
 'use client';
 import { useQuery } from '@tanstack/react-query';
 import Navbar from '@/components/Navbar';
@@ -14,13 +13,14 @@ import {
 import { formatNumber, timeAgo } from '@/lib/utils';
 import {
     AlertTriangle, CloudRain, Droplets,
-    Users, Info, TrendingUp, Activity,
+    Users, TrendingUp, Activity,
     MapPin, Calendar, Database, BarChart3,
-    Droplet, ThermometerSun, Waves, Gauge,
+    ThermometerSun, Waves, Gauge, Zap, Clock,
 } from 'lucide-react';
 
 export default function DashboardPage() {
     const { t, locale } = useLanguage();
+
     const { data: risk, isLoading: riskLoading } = useQuery({
         queryKey: ['risk-current'],
         queryFn: getCurrentRisk,
@@ -59,166 +59,224 @@ export default function DashboardPage() {
 
     const riskPercentage = (currentRisk.probability * 100).toFixed(0);
 
+    // Dynamic styling based on risk level
+    const getRiskTheme = (level: string) => {
+        const l = level?.toLowerCase();
+        switch (l) {
+            case 'extreme':
+            case 'critical':
+            case 'high':
+                return {
+                    bg: 'bg-red-500',
+                    text: 'text-red-500',
+                    lightBg: 'bg-red-50',
+                    border: 'border-red-100',
+                    bannerBg: 'bg-red-50',
+                    bannerText: 'text-red-700',
+                    bannerIcon: 'text-red-500',
+                    badge: 'HIGH RISK ALERT'
+                };
+            case 'moderate':
+            case 'medium':
+                return {
+                    bg: 'bg-orange-500',
+                    text: 'text-orange-500',
+                    lightBg: 'bg-orange-50',
+                    border: 'border-orange-100',
+                    bannerBg: 'bg-orange-50',
+                    bannerText: 'text-orange-700',
+                    bannerIcon: 'text-orange-500',
+                    badge: 'MODERATE RISK'
+                };
+            default: // low
+                return {
+                    bg: 'bg-blue-600',
+                    text: 'text-blue-600',
+                    lightBg: 'bg-blue-50',
+                    border: 'border-blue-100',
+                    bannerBg: 'bg-blue-50',
+                    bannerText: 'text-blue-700',
+                    bannerIcon: 'text-blue-500',
+                    badge: 'LOW RISK'
+                };
+        }
+    };
+
+    const theme = getRiskTheme(currentRisk.risk_level);
+
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50/30">
+        <div className="min-h-screen bg-gray-50">
             <Navbar />
 
-            {/* Hero Section - Matches screenshot exactly */}
-            <div className={`relative overflow-hidden transition-colors duration-700 ${riskLoading ? 'bg-slate-800' : 'bg-gradient-to-r from-red-600 via-red-500 to-orange-500'
-                }`}>
-                <div className="absolute inset-0 bg-black/10" />
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative">
-                    <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
-                        {riskLoading ? (
-                            <div className="space-y-3 animate-pulse">
-                                <div className="h-6 w-32 bg-white/20 rounded-full" />
-                                <div className="h-10 w-96 bg-white/20 rounded-lg" />
+            {/* ── HIGH RISK ALERT BANNER ── */}
+            {!riskLoading && (
+                <div className={`${theme.bannerBg} border-b ${theme.border}`}>
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                            <div className={`w-7 h-7 ${theme.lightBg} rounded-full flex items-center justify-center flex-shrink-0`}>
+                                {currentRisk.risk_level === 'low' ? <Waves className={`w-4 h-4 ${theme.bannerIcon}`} /> : <AlertTriangle className={`w-4 h-4 ${theme.bannerIcon}`} />}
                             </div>
-                        ) : (
                             <div>
-                                <div className="flex items-center gap-3 mb-2">
-                                    <div className="bg-white/20 backdrop-blur-sm rounded-full px-3 py-1">
-                                        <p className="text-xs font-bold text-white tracking-wide">
-                                            ⚠️ {t('db.hero.high_risk')}
-                                        </p>
-                                    </div>
-                                    {currentRisk.is_escalation && (
-                                        <div className="flex items-center gap-1 text-white/90">
-                                            <TrendingUp className="w-4 h-4" />
-                                            <span className="text-xs font-semibold">{t('db.hero.escalating')}</span>
-                                        </div>
-                                    )}
-                                </div>
-                                <h1 className="text-3xl lg:text-4xl font-bold text-white">
-                                    {t('db.hero.probability_title', { val: riskPercentage })}
-                                </h1>
-                                <p className="text-white/80 text-sm mt-1">
-                                    {t('db.updated')} {currentRisk.assessed_at ? timeAgo(currentRisk.assessed_at, locale) : '...'}
+                                <p className={`text-sm font-bold ${theme.bannerText}`}>
+                                    {currentRisk.risk_level === 'low' ? '🌊' : '⚠️'} {theme.badge}
+                                </p>
+                                <p className={`text-xs ${theme.text}`}>
+                                    Flood probability: {riskPercentage}% • Maga Region
+                                    {currentRisk.is_escalation && ' Escalating'}
                                 </p>
                             </div>
-                        )}
-                        <div className="bg-white/15 backdrop-blur-sm rounded-2xl px-6 py-3 border border-white/20">
-                            <div className="text-center">
-                                <div className="text-3xl font-bold text-white">{riskPercentage}%</div>
-                                <p className="text-white/80 text-xs">{t('db.hero.risk_level')}</p>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* ── HERO / PAGE HEADER ── */}
+            <div className="bg-white border-b border-gray-200">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                    <div className="flex items-start justify-between gap-6">
+                        {/* Left: title block */}
+                        <div>
+                            <div className="flex items-center gap-1.5 mb-2">
+                                <MapPin className="w-4 h-4 text-blue-500" />
+                                <span className="text-sm text-blue-600 font-medium">
+                                    Maga, Extrême-Nord Cameroon
+                                </span>
+                            </div>
+                            <h1 className="text-3xl font-bold text-gray-900 leading-tight">
+                                Flood Risk Dashboard
+                            </h1>
+                            <div className="flex items-center gap-1.5 mt-2 text-gray-400">
+                                <Clock className="w-3.5 h-3.5" />
+                                <span className="text-xs">
+                                    Updated {currentRisk.assessed_at ? timeAgo(currentRisk.assessed_at, locale) : '15 min ago'}
+                                </span>
+                            </div>
+                        </div>
+
+                        {/* Right: Risk Level card */}
+                        <div className="flex-shrink-0 border border-gray-200 rounded-xl overflow-hidden shadow-sm text-center min-w-[120px]">
+                            <div className={`${theme.bg} px-4 py-1.5`}>
+                                <p className="text-white text-[10px] font-bold tracking-widest uppercase">
+                                    Risk Level
+                                </p>
+                            </div>
+                            <div className="bg-white px-4 py-3">
+                                <p className={`text-4xl font-extrabold ${theme.text} leading-none`}>
+                                    {riskLoading ? '—' : `${riskPercentage}%`}
+                                </p>
+                                <p className={`text-xs font-bold ${theme.text} uppercase mt-0.5`}>
+                                    {currentRisk.risk_level}
+                                </p>
+                            </div>
+                            <div className="bg-gray-50 border-t border-gray-100 px-3 py-1.5">
+                                <span className="text-[10px] text-gray-400 font-mono">
+                                    Model {currentRisk.model_version || 'v2.1.0'}
+                                </span>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            {/* Location Header */}
-            <div className="border-b border-gray-200 bg-white/80 backdrop-blur-sm sticky top-16 z-40">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-                    <div className="flex items-center gap-2">
-                        <MapPin className="w-5 h-5 text-red-500" />
-                        <h2 className="text-xl font-semibold text-gray-900">
-                            Maga, Extrême-Nord Cameroon
-                        </h2>
-                        <span className="text-xs text-gray-400 ml-2">Flood Risk Dashboard</span>
-                    </div>
-                </div>
-            </div>
+            {/* ── MAIN CONTENT ── */}
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
 
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-
-                {/* Status Cards Grid - 4 cards matching screenshot */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+                {/* ── KPI CARDS GRID (4 cards) ── */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     {riskLoading ? (
                         [...Array(4)].map((_, i) => <LoadingKPI key={i} />)
                     ) : (
                         <>
-                            {/* Card A - Flood Probability */}
-                            <StatusCard
-                                icon={<AlertTriangle className="w-6 h-6 text-red-500" />}
-                                label={t('db.kpi.prob').toUpperCase()}
+                            {/* Card A – Flood Probability */}
+                            <KpiCard
+                                icon={currentRisk.risk_level === 'low' ? <Waves className={`w-5 h-5 ${theme.text}`} /> : <AlertTriangle className={`w-5 h-5 ${theme.text}`} />}
+                                iconBg={theme.lightBg}
+                                label={t('db.kpi.prob') || 'FLOOD PROBABILITY'}
                                 value={`${riskPercentage}%`}
-                                subtext={`${t('db.hero.risk_level')}: ${currentRisk.risk_level.toUpperCase()}`}
-                                bgGradient="from-red-50 to-orange-50"
-                                borderColor="border-red-200"
+                                subtext={`Risk Level: ${currentRisk.risk_level.charAt(0).toUpperCase() + currentRisk.risk_level.slice(1)}`}
                                 trend={currentRisk.is_escalation ? 'up' : null}
-                                trendLabel={currentRisk.is_escalation ? t('db.hero.escalating') : "Stable"}
+                                trendLabel={currentRisk.is_escalation ? 'Escalating' : 'Stable'}
                             />
 
-                            {/* Card B - Recent Rainfall */}
-                            <StatusCard
-                                icon={<CloudRain className="w-6 h-6 text-blue-500" />}
-                                label={t('db.kpi.rainfall_label')}
-                                value={latestRain ? `${latestRain.rainfall_mm.toFixed(1)}mm` : '—'}
-                                subtext={latestRain ? t('db.kpi.rain_sub', { val: latestRain.cumulative_7d.toFixed(0) }) : t('db.kpi.no_data')}
-                                bgGradient="from-blue-50 to-cyan-50"
-                                borderColor="border-blue-200"
+                            {/* Card B – Recent Rainfall */}
+                            <KpiCard
+                                icon={<CloudRain className="w-5 h-5 text-blue-400" />}
+                                iconBg="bg-blue-50"
+                                label={t('db.kpi.rainfall_label') || 'RECENT RAINFALL'}
+                                value={latestRain ? `${latestRain.rainfall_mm.toFixed(1)}` : '—'}
+                                subtext={latestRain
+                                    ? `7-day: ${latestRain.cumulative_7d.toFixed(0)}mm`
+                                    : t('db.kpi.no_data') || 'No data'}
                                 trend={latestRain?.cumulative_7d > 50 ? 'up' : null}
-                                trendLabel={latestRain?.cumulative_7d > 50 ? "Rising" : "Normal"}
+                                trendLabel={latestRain?.cumulative_7d > 50 ? 'Rising' : 'Normal'}
                             />
 
-                            {/* Card C - Lake Maga Level */}
-                            <StatusCard
-                                icon={<Droplets className="w-6 h-6 text-teal-500" />}
-                                label={t('db.kpi.lake_label')}
-                                value={latestWater ? `${latestWater.water_area_km2.toFixed(0)}km²` : '—'}
-                                subtext={latestWater ? t('db.kpi.lake_sub', { val: (latestWater.change_percent > 0 ? '+' : '') + latestWater.change_percent.toFixed(1) }) : t('db.kpi.no_data')}
-                                bgGradient="from-teal-50 to-emerald-50"
-                                borderColor="border-teal-200"
+                            {/* Card C – Lake Maga Level */}
+                            <KpiCard
+                                icon={<Droplets className="w-5 h-5 text-teal-400" />}
+                                iconBg="bg-teal-50"
+                                label={t('db.kpi.lake_label') || 'LAKE MAGA LEVEL'}
+                                value={latestWater ? `${latestWater.water_area_km2.toFixed(1)}km²` : '—'}
+                                subtext={latestWater
+                                    ? `${latestWater.change_percent > 0 ? '+' : ''}${latestWater.change_percent.toFixed(1)}% vs normal`
+                                    : t('db.kpi.no_data') || 'No data'}
                                 trend={latestWater?.change_percent > 0 ? 'up' : 'down'}
-                                trendLabel={latestWater?.change_percent > 0 ? "Rising" : "Falling"}
+                                trendLabel={latestWater?.change_percent > 0 ? 'Rising' : 'Falling'}
                             />
 
-                            {/* Card D - Active Subscribers */}
-                            <StatusCard
-                                icon={<Users className="w-6 h-6 text-purple-500" />}
-                                label={t('db.kpi.subs_label')}
+                            {/* Card D – Active Subscribers */}
+                            <KpiCard
+                                icon={<Users className="w-5 h-5 text-purple-400" />}
+                                iconBg="bg-purple-50"
+                                label={t('db.kpi.subs_label') || 'ACTIVE SUBSCRIBERS'}
                                 value={formatNumber(subscribers?.count ?? 1247)}
-                                subtext={t('db.kpi.subs_sub')}
-                                bgGradient="from-purple-50 to-pink-50"
-                                borderColor="border-purple-200"
+                                subtext={t('db.kpi.subs_sub') || 'Verified subscribers'}
                             />
                         </>
                     )}
                 </div>
 
-                {/* Charts Section - 2 columns matching screenshot */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-                    {/* Rainfall Trends Chart */}
-                    <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-300">
-                        <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4">
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-2">
-                                    <BarChart3 className="w-5 h-5 text-white" />
-                                    <h3 className="text-white font-semibold">Rainfall Trends</h3>
-                                </div>
-                                <span className="text-xs text-white/70 bg-white/20 px-2.5 py-1 rounded-full">
-                                    CHIRPS Data
-                                </span>
+                {/* ── CHARTS ROW ── */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+                    {/* Rainfall Trends */}
+                    <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+                        <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+                            <div>
+                                <h3 className="text-base font-semibold text-gray-900">
+                                    Rainfall Trends
+                                </h3>
+                                <p className="text-xs text-gray-400 mt-0.5">Last 90 days analysis</p>
                             </div>
-                            <p className="text-white/70 text-xs mt-1">Last 90 days analysis</p>
+                            <span className="text-xs font-semibold text-blue-600 bg-blue-50 border border-blue-100 px-2.5 py-1 rounded-full">
+                                CHIRPS Data
+                            </span>
                         </div>
                         <div className="p-6">
                             {rainLoading ? (
-                                <div className="h-80 bg-gray-50 rounded-xl animate-pulse" />
+                                <div className="h-64 bg-gray-50 rounded-xl animate-pulse" />
                             ) : (
                                 <RainfallChart data={rainfall} />
                             )}
                         </div>
                     </div>
 
-                    {/* Water Level Status Chart */}
-                    <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-300">
-                        <div className="bg-gradient-to-r from-teal-600 to-emerald-600 px-6 py-4">
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-2">
-                                    <Waves className="w-5 h-5 text-white" />
-                                    <h3 className="text-white font-semibold">Water Level Status</h3>
-                                </div>
-                                <span className="text-xs text-white/70 bg-white/20 px-2.5 py-1 rounded-full">
-                                    JRC Data
-                                </span>
+                    {/* Water Level Status */}
+                    <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+                        <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+                            <div>
+                                <h3 className="text-base font-semibold text-gray-900">
+                                    Water Level Status
+                                </h3>
+                                <p className="text-xs text-gray-400 mt-0.5">Lake Maga monitoring</p>
                             </div>
-                            <p className="text-white/70 text-xs mt-1">Lake Maga monitoring</p>
+                            <span className="text-xs font-semibold text-teal-600 bg-teal-50 border border-teal-100 px-2.5 py-1 rounded-full">
+                                JRC Data
+                            </span>
                         </div>
                         <div className="p-6">
                             {waterLoading ? (
-                                <div className="h-80 bg-gray-50 rounded-xl animate-pulse" />
+                                <div className="h-64 bg-gray-50 rounded-xl animate-pulse" />
                             ) : (
                                 <WaterGauge data={latestWater} />
                             )}
@@ -226,69 +284,25 @@ export default function DashboardPage() {
                     </div>
                 </div>
 
-                {/* Info Banner - Exact match to screenshot */}
-                <div className="bg-gradient-to-r from-slate-800 to-slate-900 rounded-2xl shadow-xl overflow-hidden">
-                    <div className="px-6 py-6">
-                        <div className="flex items-start gap-4">
-                            <div className="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center flex-shrink-0 border border-blue-500/30">
-                                <Database className="w-6 h-6 text-blue-400" />
-                            </div>
-                            <div className="flex-1">
-                                <h3 className="text-white font-bold text-lg mb-2">
-                                    About Flood-Watch System
-                                </h3>
-                                <p className="text-slate-300 text-sm leading-relaxed">
-                                    This advanced flood detection system utilizes Sentinel-1 SAR radar imagery via
-                                    Google Earth Engine and CHIRPS precipitation data to predict risks in the region.
-                                    Data updates every 6 hours automatically. Active model:
-                                    <span className="font-mono text-blue-400 ml-1"> {currentRisk.model_version || 'v2.1.0'}</span>
-                                </p>
-                                <div className="flex flex-wrap gap-4 mt-4 pt-3 border-t border-slate-700">
-                                    <div className="flex items-center gap-2">
-                                        <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                                        <span className="text-xs text-slate-400">Live Data Feed</span>
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                        <Activity className="w-3 h-3 text-blue-400" />
-                                        <span className="text-xs text-slate-400">{t('db.info.cycle')}</span>
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                        <ThermometerSun className="w-3 h-3 text-orange-400" />
-                                        <span className="text-xs text-slate-400">Satellite Integration</span>
-                                    </div>
-                                </div>
-                            </div>
+                {/* ── ABOUT BANNER ── */}
+                <div className="bg-gray-50 border border-gray-200 rounded-2xl px-6 py-5">
+                    <div className="flex items-start gap-4">
+                        <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <Zap className="w-5 h-5 text-blue-500" />
                         </div>
-                    </div>
-                </div>
-
-                {/* Additional Status Indicators - Bottom section matching screenshot */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mt-8">
-                    <div className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm">
-                        <div className="flex items-center gap-2 mb-3">
-                            <Gauge className="w-4 h-4 text-gray-400" />
-                            <span className="text-xs font-semibold text-gray-400 uppercase">Model Version</span>
+                        <div>
+                            <h3 className="text-sm font-bold text-gray-800 mb-1">
+                                About Flood-Watch System
+                            </h3>
+                            <p className="text-xs text-gray-500 leading-relaxed">
+                                This advanced flood detection system utilizes Sentinel-1 SAR radar imagery via
+                                Google Earth Engine and CHIRPS precipitation data to predict risks in Maga region
+                                (Extrême-Nord Cameroon). Data updates every 6 hours automatically. Active model:{' '}
+                                <span className="font-mono font-semibold text-blue-600">
+                                    {currentRisk.model_version || 'v2.1.0'}
+                                </span>
+                            </p>
                         </div>
-                        <p className="text-2xl font-bold text-gray-900">{currentRisk.model_version || 'v2.1.0'}</p>
-                        <p className="text-xs text-gray-400 mt-1">ML Prediction Model</p>
-                    </div>
-                    <div className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm">
-                        <div className="flex items-center gap-2 mb-3">
-                            <Calendar className="w-4 h-4 text-gray-400" />
-                            <span className="text-xs font-semibold text-gray-400 uppercase">Last Assessment</span>
-                        </div>
-                        <p className="text-sm font-medium text-gray-900">
-                            {currentRisk.assessed_at ? new Date(currentRisk.assessed_at).toLocaleString() : 'Just now'}
-                        </p>
-                        <p className="text-xs text-gray-400 mt-1">Automatic every 6h</p>
-                    </div>
-                    <div className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm">
-                        <div className="flex items-center gap-2 mb-3">
-                            <Database className="w-4 h-4 text-gray-400" />
-                            <span className="text-xs font-semibold text-gray-400 uppercase">Data Sources</span>
-                        </div>
-                        <p className="text-sm font-medium text-gray-900">Sentinel-1 + CHIRPS</p>
-                        <p className="text-xs text-gray-400 mt-1">Google Earth Engine</p>
                     </div>
                 </div>
 
@@ -297,53 +311,54 @@ export default function DashboardPage() {
     );
 }
 
-// ── Enhanced Status Card Component ─────────────────────────────────────────
-function StatusCard({
+// ── KPI Card Component ─────────────────────────────────────────────────────
+function KpiCard({
     icon,
+    iconBg,
     label,
     value,
     subtext,
-    bgGradient,
-    borderColor,
     trend,
     trendLabel,
 }: {
     icon: React.ReactNode;
+    iconBg: string;
     label: string;
     value: string;
     subtext: string;
-    bgGradient: string;
-    borderColor: string;
     trend?: 'up' | 'down' | null;
     trendLabel?: string;
 }) {
     return (
-        <div className={`bg-gradient-to-br ${bgGradient} rounded-2xl border ${borderColor} shadow-sm p-5 hover:shadow-lg transition-all duration-300 group cursor-default`}>
+        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5 hover:shadow-md transition-shadow duration-200">
+            {/* Icon row + trend badge */}
             <div className="flex items-start justify-between mb-3">
-                <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
+                <div className={`w-10 h-10 ${iconBg} rounded-xl flex items-center justify-center`}>
                     {icon}
                 </div>
                 {trend && trendLabel && (
-                    <div className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs font-semibold ${trend === 'up' ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'
+                    <div className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold ${trend === 'up'
+                        ? 'text-red-500'
+                        : 'text-green-600'
                         }`}>
-                        {trend === 'up' ? (
-                            <TrendingUp className="w-3 h-3" />
-                        ) : (
-                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6" />
-                            </svg>
-                        )}
+                        <TrendingUp className={`w-3 h-3 ${trend === 'down' ? 'rotate-180' : ''}`} />
                         <span>{trendLabel}</span>
                     </div>
                 )}
             </div>
-            <p className="text-xs font-bold text-gray-500 tracking-wider mb-1">
+
+            {/* Label */}
+            <p className="text-[10px] font-bold text-gray-400 tracking-widest uppercase mb-1">
                 {label}
             </p>
-            <p className="text-3xl font-bold text-gray-900">
+
+            {/* Value */}
+            <p className="text-3xl font-extrabold text-gray-900 leading-tight">
                 {value}
             </p>
-            <p className="text-xs text-gray-500 mt-2">
+
+            {/* Subtext */}
+            <p className="text-xs text-gray-400 mt-1.5">
                 {subtext}
             </p>
         </div>
