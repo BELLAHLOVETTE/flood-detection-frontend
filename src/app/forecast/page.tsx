@@ -200,7 +200,7 @@ export default function ForecastPage() {
                                         tickFormatter={v => `${v}%`}
                                     />
                                     <Tooltip
-                                        formatter={(v: number) => [`${v}%`, 'Flood Probability']}
+                                        formatter={(v) => [`${Number(v).toFixed(0)}%`, 'Flood Probability']}
                                     />
                                     <ReferenceLine
                                         y={60}
@@ -245,7 +245,7 @@ export default function ForecastPage() {
                                     <XAxis dataKey="name" tick={{ fontSize: 11 }} />
                                     <YAxis tick={{ fontSize: 11 }} />
                                     <Tooltip
-                                        formatter={(v: number) => [`${v} mm`, 'Predicted Rain']}
+                                        formatter={(v) => [`${Number(v).toFixed(1)} mm`, 'Predicted Rain']}
                                     />
                                     <ReferenceLine
                                         y={25}

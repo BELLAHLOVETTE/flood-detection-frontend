@@ -9,13 +9,17 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function formatDate(dateStr: string, pattern = 'dd MMM yyyy', locale: Locale = 'en'): string {
+export function formatDate(
+  dateStr: string,
+  pattern = 'dd MMM yyyy'
+): string {
   try {
     const d = parseISO(dateStr);
     if (!isValid(d)) return dateStr;
-    const loc = locale === 'fr' ? fr : enUS;
-    return format(d, pattern, { locale: loc });
-  } catch { return dateStr; }
+    return format(d, pattern);
+  } catch {
+    return dateStr;
+  }
 }
 
 export function timeAgo(dateStr: string, locale: Locale = 'en'): string {

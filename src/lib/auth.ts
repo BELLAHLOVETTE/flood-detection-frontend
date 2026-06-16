@@ -38,23 +38,25 @@ export async function refreshAccessToken(): Promise<string | null> {
     }
 }
 
-// export async function login(
-//     username: string,
-//     password: string
-// ): Promise<{ success: boolean; error?: string }> {
-//     try {
-//         const { data } = await apiClient.post('/auth/token/', { username, password });
-//         setTokens(data.access, data.refresh);
-//         return { success: true };
-//     } catch (err: unknown) {
-//         const axiosErr = err as { response?: { data?: { detail?: string } } };
-//         return {
-//             success: false,
-//             error: axiosErr?.response?.data?.detail ||
-//                 'Identifiants incorrects. Veuillez réessayer.',
-//         };
-//     }
-// }
+export async function login(
+    credentials: { username: string; password: string }
+): Promise<{ success: boolean; error?: string }> {
+    try {
+        const { data } = await apiClient.post('/auth/token/', credentials);
+        setTokens(data.access, data.refresh);
+        return { success: true };
+    } catch (err: unknown) {
+        const axiosErr = err as {
+            response?: { data?: { detail?: string } }
+        };
+        return {
+            success: false,
+            error:
+                axiosErr?.response?.data?.detail ||
+                'Incorrect credentials. Please try again.',
+        };
+    }
+}
 
 
 export async function signup({ full_name, username, email, password }: { full_name: string, username: string, email: string, password: string }) {
@@ -74,12 +76,6 @@ export async function signup({ full_name, username, email, password }: { full_na
     // return { success: false, error: 'This is a simulated error message.' };
 }
 
-export async function login({ email, password }: { email: string, password: string }) {
-    // This is a placeholder for your login logic.
-    console.log('Attempting to log in:', { email, password });
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    return { success: true };
-}
 
 export async function logout(): Promise<void> {
     clearTokens();

@@ -197,7 +197,7 @@ export default function HistoryPage() {
                                                     </div>
                                                     <h3 className="mt-2 text-lg font-semibold text-slate-900">
                                                         {t('hist.flood_of', {
-                                                            val: formatDate(event.event_date, 'MMMM yyyy', { locale: dateLocale }),
+                                                            val: formatDate(event.event_date, 'MMMM yyyy'),
                                                         })}
                                                     </h3>
                                                 </div>
@@ -225,9 +225,9 @@ export default function HistoryPage() {
                                             )}
 
                                             <div className="mt-4 grid grid-cols-1 gap-2 rounded-xl bg-slate-50 p-3 sm:grid-cols-3">
-                                                <EventStat icon="👥" label={t('hist.event.affected')} value={formatNumber(event.affected_population)} />
-                                                <EventStat icon="🗺️" label={t('hist.event.area')} value={`${event.affected_area_km2} km²`} />
-                                                <EventStat icon="🏘️" label={t('hist.event.villages')} value={String(event.villages_affected ?? '—')} />
+                                                <EventStat icon="👥" label="People affected" value={formatNumber(event.affected_population)} />
+                                                <EventStat icon="🗺️" label="Area flooded" value={`${event.affected_area_km2} km²`} />
+                                                <EventStat icon="📄" label="Source" value={event.source || '—'} />
                                             </div>
                                         </article>
                                     </li>

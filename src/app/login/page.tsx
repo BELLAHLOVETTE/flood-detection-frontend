@@ -25,13 +25,13 @@ export default function LoginPage() {
         }
 
         setLoading(true);
-        const result = await login(username, password);
+        const result = await login({ username, password });
 
         if (result.success) {
             toast.success('Connexion réussie!');
             router.push('/admin');
         } else {
-            setError(result.error || 'Erreur de connexion.');
+            setError(result.error || 'Login failed. Please try again.');
             setLoading(false);
         }
     }

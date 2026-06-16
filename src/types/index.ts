@@ -60,6 +60,7 @@ export interface AlertRecord {
     alert_type: string;
     title: string;
     message_fr: string;
+    message_en: string;
     total_recipients: number;
     sms_sent: number;
     email_sent: number;
