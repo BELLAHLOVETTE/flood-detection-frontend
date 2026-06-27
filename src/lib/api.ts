@@ -126,3 +126,29 @@ export const registerUser = (data: {
     organisation: string;
 }): Promise<{ message: string; username: string; email: string }> =>
     apiClient.post('/auth/register/', data).then(r => r.data);
+
+export interface AdminSubscriber {
+    id: string;
+    masked_email: string | null;
+    phone_display: string | null;
+    preferred_channel: string;
+    language: string;
+    is_verified: boolean;
+    is_active: boolean;
+    subscription_area: string | null;
+    last_alert_sent: string | null;
+    created_at: string;
+}
+
+export interface AdminSubscribersResponse {
+    stats: {
+        total: number;
+        verified: number;
+        active: number;
+        email_reachable: number;
+    };
+    subscribers: AdminSubscriber[];
+}
+
+export const getAdminSubscribers = (): Promise<AdminSubscribersResponse> =>
+    apiClient.get('/admin/subscribers/').then(r => r.data);
