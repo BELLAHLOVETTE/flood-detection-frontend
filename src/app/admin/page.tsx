@@ -111,13 +111,12 @@ export default function AdminPage() {
                         <RefreshCw className="w-4 h-4" />
                         {t('admin.refresh')}
                     </button>
-                </div>
-
-                <Link href="/admin/subscribers"
-                    className="px-4 py-2 text-sm font-medium text-stone-700 bg-white border
+                    <Link href="/admin/subscribers"
+                        className="px-4 py-2 text-sm font-medium text-stone-700 bg-white border
              border-stone-200 rounded-xl hover:bg-stone-50 transition-colors">
-                    View subscribers
-                </Link>
+                        View subscribers
+                    </Link>
+                </div>
 
                 {/* KPI Row */}
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
