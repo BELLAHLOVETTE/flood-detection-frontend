@@ -188,44 +188,43 @@ export default function LandingPage() {
       {/* Footer */}
       <footer className="bg-slate-900 text-gray-300 border-t border-slate-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 py-12">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 pb-10 border-b border-slate-800">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-8 pb-10 border-b border-slate-800">
             <div>
               <div className="flex items-center gap-2 mb-4">
                 <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-white"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4" /></svg>
                 </div>
-                <span className="text-white font-bold text-lg">FloodWatch</span>
+                <span className="text-white font-bold text-lg">Flood-Watch Cameroon</span>
               </div>
-              <p className="text-sm text-slate-400">Protecting communities from flood dangers across Cameroon.</p>
+              <p className="text-sm text-slate-400">
+                Satellite-based flood detection and early warning for Maga
+                Sub-Division, Far North Cameroon.
+              </p>
             </div>
             <div>
               <h4 className="text-white font-semibold mb-3">Platform</h4>
               <ul className="space-y-2 text-sm">
                 <li><Link href="/dashboard" className="hover:text-blue-400 transition">Dashboard</Link></li>
+                <li><Link href="/forecast" className="hover:text-blue-400 transition">7-Day Forecast</Link></li>
                 <li><Link href="/map" className="hover:text-blue-400 transition">Flood Map</Link></li>
                 <li><Link href="/history" className="hover:text-blue-400 transition">Historical Data</Link></li>
                 <li><Link href="/alerts" className="hover:text-blue-400 transition">Alert System</Link></li>
               </ul>
             </div>
             <div>
-              <h4 className="text-white font-semibold mb-3">Resources</h4>
+              <h4 className="text-white font-semibold mb-3">About</h4>
               <ul className="space-y-2 text-sm">
-                <li><Link href="/safety-guide" className="hover:text-blue-400 transition">Safety Guide</Link></li>
-                <li><Link href="/api-docs" className="hover:text-blue-400 transition">API Docs</Link></li>
-                <li><Link href="/community" className="hover:text-blue-400 transition">Community Forum</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="text-white font-semibold mb-3">Legal</h4>
-              <ul className="space-y-2 text-sm">
-                <li><Link href="/privacy" className="hover:text-blue-400 transition">Privacy Policy</Link></li>
-                <li><Link href="/terms" className="hover:text-blue-400 transition">Terms of Use</Link></li>
-                <li><Link href="/contact" className="hover:text-blue-400 transition">Contact Us</Link></li>
+                <li><Link href="/about" className="hover:text-blue-400 transition">How It Works</Link></li>
+                <li><Link href="/about" className="hover:text-blue-400 transition">Data Sources</Link></li>
+                <li><Link href="/login" className="hover:text-blue-400 transition">Authority Login</Link></li>
               </ul>
             </div>
           </div>
           <div className="flex flex-col md:flex-row justify-between items-center gap-4 pt-8 text-sm text-slate-500">
-            <div>© 2025 FloodWatch. Protecting communities from flood dangers.</div>
+            <div>© 2026 Flood-Watch Cameroon. Final year project — Maga, Far North.</div>
+            <div className="text-xs">
+              Data: Sentinel-1 SAR · CHIRPS · JRC · NOAA GFS
+            </div>
           </div>
         </div>
       </footer>
