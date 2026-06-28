@@ -60,22 +60,24 @@ export default function HistoryPage() {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-sky-50/40">
+        <div className="min-h-screen font-sans bg-gradient-to-b from-slate-50 via-white to-sky-50/40">
             <Navbar />
 
-            {/* Hero */}
-            <header className="relative overflow-hidden border-b border-slate-200/60 bg-gradient-to-br from-teal-700 via-cyan-700 to-sky-700">
-                <div className="absolute inset-0 opacity-15 [background-image:radial-gradient(circle_at_1px_1px,white_1px,transparent_0)] [background-size:24px_24px]" />
-                <div className="relative mx-auto max-w-7xl px-6 py-12 sm:py-16">
-                    <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-xs font-medium text-white backdrop-blur">
-                        <Droplets className="h-3.5 w-3.5" />
+            {/* Header — aqua system, matches other pages */}
+            <header className="border-b" style={{ borderColor: 'var(--fw-line)', background: 'var(--fw-paper)' }}>
+                <div className="max-w-7xl mx-auto px-6 pt-10 pb-8 fw-rise">
+                    <p className="text-[12px] tracking-[0.18em] uppercase mb-2"
+                        style={{ color: 'var(--fw-teal)' }}>
                         Maga · Cameroon
-                    </div>
-                    <h1 className="flex items-center gap-3 text-4xl font-bold tracking-tight text-white sm:text-5xl">
-                        <History className="h-9 w-9" />
+                    </p>
+                    <h1 className="text-3xl sm:text-[2.2rem] font-semibold tracking-tight leading-none"
+                        style={{ color: 'var(--fw-deep)' }}>
                         {t('hist.title')}
                     </h1>
-                    <p className="mt-3 max-w-2xl text-base text-sky-50/90 sm:text-lg">{t('hist.desc')}</p>
+                    <p className="mt-3 max-w-2xl text-[14px]"
+                        style={{ color: 'var(--fw-ink)', opacity: 0.6 }}>
+                        {t('hist.desc')}
+                    </p>
                 </div>
             </header>
 
