@@ -77,6 +77,96 @@
 }
 
 :root {
+  /* ── Flood-Watch aqua design tokens ─────────────────── */
+  --fw-deep: #0a5560;
+  /* deepest teal — text on light, dark sections */
+  --fw-teal: #0e7c8b;
+  /* primary brand teal */
+  --fw-aqua: #5fc7d1;
+  /* accent — use sparingly */
+  --fw-mist: #eef6f7;
+  /* tinted background wash */
+  --fw-paper: #fbfdfd;
+  /* page background, near-white */
+  --fw-ink: #143438;
+  /* body text */
+  --fw-line: #dce8e9;
+  /* hairline borders */
+}
+
+@keyframes fw-rise {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fw-fade {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fw-wave {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+.fw-rise {
+  animation: fw-rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.fw-fade {
+  animation: fw-fade 0.9s ease both;
+}
+
+.fw-wave {
+  animation: fw-wave 4s ease-in-out infinite;
+}
+
+/* stagger helpers */
+.fw-d1 {
+  animation-delay: 0.08s;
+}
+
+.fw-d2 {
+  animation-delay: 0.16s;
+}
+
+.fw-d3 {
+  animation-delay: 0.24s;
+}
+
+.fw-d4 {
+  animation-delay: 0.32s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .fw-rise,
+  .fw-fade,
+  .fw-wave {
+    animation: none;
+  }
+}
+
+:root {
   --background: 0 0% 100%;
   --foreground: 222.2 84% 4.9%;
   --card: 0 0% 100%;

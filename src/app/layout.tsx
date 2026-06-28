@@ -14,6 +14,7 @@ export const metadata: Metadata = {
   description: 'Flood detection and early warning system — Maga, Far North region',
   keywords: 'flood, Maga, Cameroon, alert, satellite, Sentinel-1',
   authors: [{ name: 'Flood-Watch System' }],
+  icons: { icon: "/favicon.svg" },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
