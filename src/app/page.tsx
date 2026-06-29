@@ -16,7 +16,7 @@ export default function LandingPage() {
       <div className="relative w-full h-[40vh] min-h-[280px] sm:h-[46vh] overflow-hidden fw-fade">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="/flood-maga.jpg"
+          src="/flood-maga.png"
           alt="Flooding in the Maga region, Far North Cameroon"
           className="absolute inset-0 w-full h-full object-cover"
         />
