@@ -1,6 +1,7 @@
 // src/components/Navbar.tsx
 'use client';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
@@ -8,12 +9,11 @@ import { isAuthenticated, logout } from '@/lib/auth';
 import toast from 'react-hot-toast';
 import {
     LayoutDashboard, Map, History, Bell,
-    AlertTriangle, Menu, X, LogIn, LogOut,
-    Shield, TrendingUp, Info,
+    Menu, X, LogIn, LogOut, Shield, TrendingUp, Info,
 } from 'lucide-react';
 
 const navLinks = [
-    { href: '/', label: 'Dashboard', icon: LayoutDashboard },
+    { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { href: '/forecast', label: 'Forecast', icon: TrendingUp },
     { href: '/map', label: 'Map', icon: Map },
     { href: '/history', label: 'History', icon: History },
@@ -31,7 +31,6 @@ export default function Navbar() {
         setAuthed(isAuthenticated());
     }, [pathname]);
 
-    // Close mobile menu when route changes
     useEffect(() => {
         setOpen(false);
     }, [pathname]);
@@ -44,41 +43,49 @@ export default function Navbar() {
     }
 
     return (
-        <nav className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
+        <nav className="sticky top-0 z-50 border-b backdrop-blur-md"
+            style={{
+                background: 'rgba(251, 253, 253, 0.85)',
+                borderColor: 'var(--fw-line)',
+            }}>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center justify-between h-16">
 
                     {/* Logo */}
-                    <Link href="/" className="flex items-center gap-2.5 flex-shrink-0">
-                        <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-blue-800
-                            rounded-xl flex items-center justify-center shadow-sm">
-                            <AlertTriangle className="w-5 h-5 text-white" />
-                        </div>
-                        <div className="hidden sm:block">
-                            <p className="text-sm font-bold text-gray-900 leading-none">
+                    <Link href="/" className="flex items-center gap-2.5 flex-shrink-0 group">
+                        <Image
+                            src="/logo-mark.svg"
+                            alt="Flood-Watch"
+                            width={32}
+                            height={32}
+                            className="transition-transform duration-300 group-hover:scale-105"
+                        />
+                        <div className="hidden sm:block leading-tight">
+                            <p className="text-[14px] font-semibold leading-none"
+                                style={{ color: 'var(--fw-deep)' }}>
                                 Flood-Watch
                             </p>
-                            <p className="text-xs text-gray-400 leading-none">
+                            <p className="text-[11px] leading-none mt-0.5"
+                                style={{ color: 'var(--fw-teal)' }}>
                                 Cameroon
                             </p>
                         </div>
                     </Link>
 
-                    {/* Desktop navigation links */}
-                    <div className="hidden md:flex items-center gap-1">
+                    {/* Desktop nav links */}
+                    <div className="hidden md:flex items-center gap-0.5">
                         {navLinks.map(({ href, label, icon: Icon }) => {
                             const active = pathname === href;
                             return (
                                 <Link
                                     key={href}
                                     href={href}
-                                    className={cn(
-                                        'flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm',
-                                        'font-medium transition-all duration-150',
+                                    className="flex items-center gap-1.5 px-3 py-2 rounded-full text-[13.5px] font-medium transition-colors duration-150"
+                                    style={
                                         active
-                                            ? 'bg-blue-50 text-blue-700'
-                                            : 'text-gray-500 hover:bg-gray-100 hover:text-gray-900'
-                                    )}
+                                            ? { background: 'var(--fw-mist)', color: 'var(--fw-deep)' }
+                                            : { color: 'var(--fw-ink)', opacity: 0.6 }
+                                    }
                                 >
                                     <Icon className="w-4 h-4" />
                                     {label}
@@ -88,10 +95,15 @@ export default function Navbar() {
                     </div>
 
                     {/* Desktop right side */}
-                    <div className="hidden md:flex items-center gap-2">
-                        {/* Live indicator */}
-                        <div className="flex items-center gap-1.5 text-xs text-gray-400">
-                            <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+                    <div className="hidden md:flex items-center gap-3">
+                        <div className="flex items-center gap-1.5 text-[11.5px]"
+                            style={{ color: 'var(--fw-ink)', opacity: 0.5 }}>
+                            <span className="relative flex h-2 w-2">
+                                <span className="absolute inline-flex h-full w-full rounded-full opacity-60 animate-ping"
+                                    style={{ background: 'var(--fw-aqua)' }} />
+                                <span className="relative inline-flex h-2 w-2 rounded-full"
+                                    style={{ background: 'var(--fw-teal)' }} />
+                            </span>
                             Live — Maga
                         </div>
 
@@ -99,18 +111,16 @@ export default function Navbar() {
                             <>
                                 <Link
                                     href="/admin"
-                                    className="flex items-center gap-1.5 px-3 py-1.5 text-xs
-                             font-medium text-blue-700 bg-blue-50 rounded-lg
-                             hover:bg-blue-100 transition-colors"
+                                    className="flex items-center gap-1.5 px-3.5 py-1.5 text-[12.5px] font-medium rounded-full transition-colors"
+                                    style={{ background: 'var(--fw-mist)', color: 'var(--fw-deep)' }}
                                 >
                                     <Shield className="w-3.5 h-3.5" />
                                     Admin
                                 </Link>
                                 <button
                                     onClick={handleLogout}
-                                    className="flex items-center gap-1.5 px-3 py-1.5 text-xs
-                             font-medium text-gray-500 hover:text-red-600
-                             hover:bg-red-50 rounded-lg transition-colors"
+                                    className="flex items-center gap-1.5 px-3 py-1.5 text-[12.5px] font-medium rounded-full transition-colors hover:bg-[var(--fw-mist)]"
+                                    style={{ color: 'var(--fw-ink)', opacity: 0.6 }}
                                 >
                                     <LogOut className="w-3.5 h-3.5" />
                                     Logout
@@ -119,9 +129,8 @@ export default function Navbar() {
                         ) : (
                             <Link
                                 href="/login"
-                                className="flex items-center gap-1.5 px-3 py-1.5 text-xs
-                           font-medium text-gray-600 border border-gray-200
-                           rounded-lg hover:bg-gray-50 transition-colors"
+                                className="flex items-center gap-1.5 px-4 py-1.5 text-[12.5px] font-medium rounded-full border transition-colors hover:bg-[var(--fw-mist)]"
+                                style={{ borderColor: 'var(--fw-line)', color: 'var(--fw-deep)' }}
                             >
                                 <LogIn className="w-3.5 h-3.5" />
                                 Login
@@ -132,8 +141,8 @@ export default function Navbar() {
                     {/* Mobile hamburger */}
                     <button
                         onClick={() => setOpen(!open)}
-                        className="md:hidden p-2 rounded-lg text-gray-500
-                       hover:bg-gray-100 transition-colors"
+                        className="md:hidden p-2 rounded-lg transition-colors hover:bg-[var(--fw-mist)]"
+                        style={{ color: 'var(--fw-deep)' }}
                         aria-label="Toggle menu"
                     >
                         {open ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -144,7 +153,8 @@ export default function Navbar() {
 
             {/* Mobile menu */}
             {open && (
-                <div className="md:hidden border-t border-gray-100 bg-white shadow-lg">
+                <div className="md:hidden border-t"
+                    style={{ borderColor: 'var(--fw-line)', background: 'var(--fw-paper)' }}>
                     <div className="px-4 py-3 space-y-1">
                         {navLinks.map(({ href, label, icon: Icon }) => {
                             const active = pathname === href;
@@ -152,13 +162,12 @@ export default function Navbar() {
                                 <Link
                                     key={href}
                                     href={href}
-                                    className={cn(
-                                        'flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm',
-                                        'font-medium transition-colors',
+                                    className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors"
+                                    style={
                                         active
-                                            ? 'bg-blue-50 text-blue-700'
-                                            : 'text-gray-600 hover:bg-gray-50'
-                                    )}
+                                            ? { background: 'var(--fw-mist)', color: 'var(--fw-deep)' }
+                                            : { color: 'var(--fw-ink)', opacity: 0.7 }
+                                    }
                                 >
                                     <Icon className="w-4 h-4" />
                                     {label}
@@ -166,22 +175,22 @@ export default function Navbar() {
                             );
                         })}
 
-                        <div className="pt-2 border-t border-gray-100 mt-2 space-y-1">
+                        <div className="pt-2 border-t mt-2 space-y-1"
+                            style={{ borderColor: 'var(--fw-line)' }}>
                             {authed ? (
                                 <>
                                     <Link
                                         href="/admin"
-                                        className="flex items-center gap-3 px-3 py-2.5 rounded-xl
-                               text-sm font-medium text-blue-700 hover:bg-blue-50"
+                                        className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium"
+                                        style={{ color: 'var(--fw-deep)' }}
                                     >
                                         <Shield className="w-4 h-4" />
                                         Admin Dashboard
                                     </Link>
                                     <button
                                         onClick={handleLogout}
-                                        className="w-full flex items-center gap-3 px-3 py-2.5
-                               rounded-xl text-sm font-medium text-red-600
-                               hover:bg-red-50"
+                                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium"
+                                        style={{ color: '#c2410c' }}
                                     >
                                         <LogOut className="w-4 h-4" />
                                         Logout
@@ -191,16 +200,16 @@ export default function Navbar() {
                                 <>
                                     <Link
                                         href="/login"
-                                        className="flex items-center gap-3 px-3 py-2.5 rounded-xl
-                               text-sm font-medium text-gray-600 hover:bg-gray-50"
+                                        className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium"
+                                        style={{ color: 'var(--fw-ink)' }}
                                     >
                                         <LogIn className="w-4 h-4" />
                                         Login
                                     </Link>
                                     <Link
                                         href="/signup"
-                                        className="flex items-center gap-3 px-3 py-2.5 rounded-xl
-                               text-sm font-medium text-blue-600 hover:bg-blue-50"
+                                        className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium"
+                                        style={{ color: 'var(--fw-teal)' }}
                                     >
                                         <Shield className="w-4 h-4" />
                                         Register as Authority
