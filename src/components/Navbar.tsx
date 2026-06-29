@@ -86,6 +86,20 @@ export default function Navbar() {
                                             ? { background: 'var(--fw-mist)', color: 'var(--fw-deep)' }
                                             : { color: 'var(--fw-ink)', opacity: 0.6 }
                                     }
+                                    onMouseEnter={(e) => {
+                                        if (!active) {
+                                            e.currentTarget.style.opacity = '1';
+                                            e.currentTarget.style.color = 'var(--fw-deep)';
+                                            e.currentTarget.style.background = 'var(--fw-mist)';
+                                        }
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        if (!active) {
+                                            e.currentTarget.style.opacity = '0.6';
+                                            e.currentTarget.style.color = 'var(--fw-ink)';
+                                            e.currentTarget.style.background = 'transparent';
+                                        }
+                                    }}
                                 >
                                     <Icon className="w-4 h-4" />
                                     {label}

@@ -99,7 +99,8 @@ export default function AlertsPage() {
             <Navbar />
 
             {/* HERO */}
-            <section className="relative overflow-hidden bg-gradient-to-br from-blue-600 via-blue-500 to-cyan-400 text-white">
+            <section className="relative overflow-hidden text-white"
+                style={{ background: 'linear-gradient(to bottom right, var(--fw-teal), var(--fw-deep))' }}>
                 <div className="absolute inset-0 opacity-20 [background:radial-gradient(circle_at_20%_20%,white,transparent_40%),radial-gradient(circle_at_80%_60%,white,transparent_45%)]" />
                 <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
                     <div className="flex items-center gap-4">
@@ -146,12 +147,12 @@ export default function AlertsPage() {
                                                         key={opt.value}
                                                         type="button"
                                                         onClick={() => setChannel(opt.value)}
-                                                        className={`group relative flex flex-col items-center gap-1.5 p-3 rounded-2xl border-2 text-sm font-medium transition-all ${active
-                                                            ? 'border-blue-500 bg-blue-50 text-blue-700 shadow-sm ring-4 ring-blue-100'
-                                                            : 'border-slate-200 text-slate-600 hover:border-slate-300 hover:bg-slate-50'
-                                                            }`}
+                                                        className="group relative flex flex-col items-center gap-1.5 p-3 rounded-2xl border-2 text-sm font-medium transition-all"
+                                                        style={active
+                                                            ? { borderColor: 'var(--fw-teal)', background: 'var(--fw-mist)', color: 'var(--fw-deep)' }
+                                                            : { borderColor: '#e2e8f0', color: '#475569' }}
                                                     >
-                                                        <span className={active ? 'text-blue-600' : 'text-slate-500'}>{opt.icon}</span>
+                                                        <span style={{ color: active ? 'var(--fw-teal)' : '#64748b' }}>{opt.icon}</span>
                                                         {opt.label}
                                                     </button>
                                                 );
@@ -172,7 +173,8 @@ export default function AlertsPage() {
                                                     value={phone}
                                                     onChange={(e) => setPhone(e.target.value)}
                                                     placeholder="+237 6XX XXX XXX"
-                                                    className="w-full pl-10 pr-4 py-2.5 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                                    className="w-full pl-10 pr-4 py-2.5 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:border-transparent"
+                                                    style={{ ['--tw-ring-color' as any]: 'var(--fw-teal)' }}
                                                 />
                                             </div>
                                             <p className="mt-1.5 text-xs text-slate-400">{t('alerts.phone.format')}</p>
@@ -192,7 +194,8 @@ export default function AlertsPage() {
                                                     value={email}
                                                     onChange={(e) => setEmail(e.target.value)}
                                                     placeholder="votre@email.com"
-                                                    className="w-full pl-10 pr-4 py-2.5 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                                    className="w-full pl-10 pr-4 py-2.5 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:border-transparent"
+                                                    style={{ ['--tw-ring-color' as any]: 'var(--fw-teal)' }}
                                                 />
                                             </div>
                                         </div>
@@ -214,8 +217,10 @@ export default function AlertsPage() {
                                                         key={opt.value}
                                                         type="button"
                                                         onClick={() => setLanguage(opt.value)}
-                                                        className={`py-2 rounded-lg text-sm font-medium transition-all ${active ? 'bg-white text-blue-700 shadow-sm' : 'text-slate-500 hover:text-slate-700'
-                                                            }`}
+                                                        className="py-2 rounded-lg text-sm font-medium transition-all"
+                                                        style={active
+                                                            ? { background: '#fff', color: 'var(--fw-deep)', boxShadow: '0 1px 2px rgba(0,0,0,0.05)' }
+                                                            : { color: '#64748b' }}
                                                     >
                                                         {opt.label}
                                                     </button>
@@ -230,7 +235,8 @@ export default function AlertsPage() {
                                         type="button"
                                         onClick={handleSubscribe}
                                         disabled={loading}
-                                        className="w-full inline-flex items-center justify-center gap-2 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-semibold shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 hover:-translate-y-px transition-all disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:translate-y-0"
+                                        className="w-full inline-flex items-center justify-center gap-2 py-3 rounded-xl text-white font-semibold shadow-lg hover:-translate-y-px transition-all disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:translate-y-0"
+                                        style={{ background: 'linear-gradient(to right, var(--fw-teal), var(--fw-aqua))' }}
                                     >
                                         {loading ? (
                                             <>
@@ -255,8 +261,9 @@ export default function AlertsPage() {
                             {step === 'verify' && (
                                 <div className="mt-6 space-y-5">
                                     <div className="text-center">
-                                        <div className="mx-auto h-14 w-14 rounded-2xl bg-blue-50 ring-1 ring-blue-100 grid place-items-center">
-                                            <MessageSquare className="h-7 w-7 text-blue-600" />
+                                        <div className="mx-auto h-14 w-14 rounded-2xl grid place-items-center ring-1"
+                                            style={{ background: 'var(--fw-mist)', borderColor: 'var(--fw-line)' }}>
+                                            <MessageSquare className="h-7 w-7" style={{ color: 'var(--fw-teal)' }} />
                                         </div>
                                         <h2 className="mt-3 text-xl font-bold text-slate-900">{t('alerts.verify.title')}</h2>
                                         <p className="mt-1 text-sm text-slate-500">
@@ -275,7 +282,10 @@ export default function AlertsPage() {
                                             onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
                                             placeholder="123456"
                                             maxLength={6}
-                                            className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl text-center text-2xl font-mono tracking-[0.5em] focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500"
+                                            className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl text-center text-2xl font-mono tracking-[0.5em] focus:outline-none focus:ring-4"
+                                            style={{ ['--tw-ring-color' as any]: 'var(--fw-mist)' }}
+                                            onFocus={(e) => { e.currentTarget.style.borderColor = 'var(--fw-teal)'; }}
+                                            onBlur={(e) => { e.currentTarget.style.borderColor = '#e2e8f0'; }}
                                         />
                                     </div>
 
@@ -285,7 +295,8 @@ export default function AlertsPage() {
                                         type="button"
                                         onClick={handleVerify}
                                         disabled={loading}
-                                        className="w-full inline-flex items-center justify-center gap-2 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-semibold shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 transition-all disabled:opacity-60"
+                                        className="w-full inline-flex items-center justify-center gap-2 py-3 rounded-xl text-white font-semibold shadow-lg transition-all disabled:opacity-60"
+                                        style={{ background: 'linear-gradient(to right, var(--fw-teal), var(--fw-aqua))' }}
                                     >
                                         {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <CheckCircle2 className="h-4 w-4" />}
                                         {loading ? t('alerts.verify.verifying') : t('alerts.verify.confirm')}
@@ -329,7 +340,8 @@ export default function AlertsPage() {
                                         onClick={() => {
                                             setStep('form'); setPhone(''); setEmail(''); setOtp(''); setError('');
                                         }}
-                                        className="text-sm text-blue-600 hover:text-blue-700 font-semibold"
+                                        className="text-sm font-semibold transition-colors"
+                                        style={{ color: 'var(--fw-teal)' }}
                                     >
                                         {t('alerts.success.another')}
                                     </button>
@@ -346,7 +358,8 @@ export default function AlertsPage() {
                                     <h2 className="text-xl font-bold text-slate-900">{t('alerts.history.title')}</h2>
                                     <p className="text-sm text-slate-500 mt-0.5">Recent alerts sent to subscribers</p>
                                 </div>
-                                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-semibold ring-1 ring-blue-100">
+                                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold ring-1"
+                                    style={{ background: 'var(--fw-mist)', color: 'var(--fw-deep)', borderColor: 'var(--fw-line)' }}>
                                     <Inbox className="h-3.5 w-3.5" />
                                     {alerts.length}
                                 </span>
@@ -434,8 +447,14 @@ function StepIndicator({ current }: { current: Step }) {
                 const active = i === currentIdx;
                 return (
                     <div key={s.key} className="flex items-center gap-2 flex-1">
-                        <div className={`flex-1 h-1.5 rounded-full transition-colors ${done ? 'bg-blue-500' : active ? 'bg-gradient-to-r from-blue-500 to-blue-200' : 'bg-slate-200'
-                            }`} />
+                        <div className="flex-1 h-1.5 rounded-full transition-colors"
+                            style={{
+                                background: done
+                                    ? 'var(--fw-teal)'
+                                    : active
+                                        ? 'linear-gradient(to right, var(--fw-teal), var(--fw-mist))'
+                                        : '#e2e8f0',
+                            }} />
                     </div>
                 );
             })}
