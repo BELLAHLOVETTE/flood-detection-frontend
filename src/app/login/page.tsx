@@ -1,7 +1,7 @@
 // src/app/login/page.tsx
 'use client';
 
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -12,7 +12,7 @@ import { Eye, EyeOff, Lock, User, Mail, Building2, AlertTriangle, CheckCircle2 }
 
 type Mode = 'signin' | 'signup' | 'success';
 
-export default function LoginPage() {
+function LoginContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const initialMode: Mode = searchParams.get('mode') === 'signup' ? 'signup' : 'signin';
@@ -258,6 +258,20 @@ export default function LoginPage() {
                 </div>
             </div>
         </div>
+    );
+}
+
+export default function LoginPage() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen flex items-center justify-center"
+                style={{ background: 'var(--fw-paper)' }}>
+                <div className="w-8 h-8 rounded-full border-[3px] animate-spin"
+                    style={{ borderColor: 'var(--fw-line)', borderTopColor: 'var(--fw-teal)' }} />
+            </div>
+        }>
+            <LoginContent />
+        </Suspense>
     );
 }
 
