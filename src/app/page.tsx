@@ -12,38 +12,29 @@ export default function LandingPage() {
     <div className="min-h-screen" style={{ background: 'var(--fw-paper)' }}>
       <Navbar />
 
-      {/* ── Hero ─────────────────────────────────────────── */}
-      <section className="relative overflow-hidden">
-        <div
-          className="absolute inset-0 -z-10"
-          style={{
-            background:
-              'radial-gradient(120% 80% at 50% 0%, var(--fw-mist) 0%, var(--fw-paper) 60%)',
-          }}
+      {/* ── Full-bleed flood image banner (edge to edge) ─── */}
+      <div className="relative w-full h-[40vh] min-h-[280px] sm:h-[46vh] overflow-hidden fw-fade">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/flood-maga.jpg"
+          alt="Flooding in the Maga region, Far North Cameroon"
+          className="absolute inset-0 w-full h-full object-cover"
         />
-        <div className="max-w-5xl mx-auto px-5 sm:px-8 pt-14 pb-24 text-center">
+        {/* gradient fade into the page so it blends */}
+        <div className="absolute inset-0"
+          style={{ background: 'linear-gradient(to bottom, rgba(10,85,96,0.20) 0%, rgba(10,85,96,0.05) 40%, var(--fw-paper) 98%)' }} />
+      </div>
+
+      {/* ── Hero content (sits below the image) ──────────── */}
+      <section className="relative">
+        <div className="max-w-5xl mx-auto px-5 sm:px-8 -mt-12 pb-24 text-center relative z-10">
           {show && (
             <>
-              {/* flood image — slim banner above the logo */}
-              <div className="flex justify-center mb-8 fw-fade">
-                <div className="relative w-full max-w-lg h-36 sm:h-44 rounded-2xl overflow-hidden shadow-md">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src="/flood-maga.png"
-                    alt="Flooding in the Maga region, Far North Cameroon"
-                    className="w-full h-full object-cover"
-                  />
-                  {/* subtle teal wash so it blends with the palette */}
-                  <div className="absolute inset-0"
-                    style={{ background: 'linear-gradient(to top, rgba(10,85,96,0.35), transparent 60%)' }} />
-                </div>
-              </div>
-
-              {/* floating logo */}
+              {/* logo */}
               <div className="flex justify-center mb-6 fw-fade">
                 <div className="fw-wave">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src="/logo-mark.svg" alt="Flood-Watch" width={72} height={72} />
+                  <img src="/logo-mark.svg" alt="Flood-Watch" width={80} height={80} />
                 </div>
               </div>
 
