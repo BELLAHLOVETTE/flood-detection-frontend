@@ -132,7 +132,7 @@ function LoginContent() {
                                 <ul className="space-y-2.5 text-[13.5px]" style={{ color: 'var(--fw-ink)', opacity: 0.75 }}>
                                     {[
                                         'An administrator reviews your account',
-                                        'You receive an email once approved',
+                                        'Your account is activated once reviewed',
                                         'You can then sign in to the dashboard',
                                     ].map((s, i) => (
                                         <li key={i} className="flex items-start gap-2.5">
