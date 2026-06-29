@@ -6,37 +6,33 @@ import { useQuery } from '@tanstack/react-query';
 import Navbar from '@/components/Navbar';
 import { getAdminSubscribers, type AdminSubscriber } from '@/lib/api';
 
-// ── Language (English primary, French toggle — self-contained) ────────────────
 type Lang = 'en' | 'fr';
 
 const TR = {
     en: {
-        back: 'Back to admin', title: 'Subscribers',
+        back: 'Back to admin', eyebrow: 'Authority console', title: 'Subscribers',
         subtitle: 'People registered to receive flood alerts for Maga.',
         total: 'Total', verified: 'Verified', active: 'Active', reach: 'Email-reachable',
         search: 'Search area, channel or contact', all: 'All', pendingF: 'Pending',
         contact: 'Contact', channel: 'Channel', lang: 'Lang', area: 'Area',
-        status: 'Status', joined: 'Joined', last: 'Last alert', never: 'never',
+        status: 'Status', joined: 'Joined',
         empty: 'No subscribers yet.',
         emptyHint: 'They will appear here once people register on the Alerts page.',
-        active2: 'Active', inactive: 'Inactive', pending: 'Pending', refresh: 'Refresh',
-        showing: 'showing',
+        active2: 'Active', inactive: 'Inactive', pending: 'Pending', showing: 'showing',
     },
     fr: {
-        back: 'Retour admin', title: 'Abonnés',
+        back: 'Retour admin', eyebrow: 'Console autorité', title: 'Abonnés',
         subtitle: 'Personnes inscrites pour recevoir les alertes d’inondation à Maga.',
         total: 'Total', verified: 'Vérifiés', active: 'Actifs', reach: 'Joignables e-mail',
         search: 'Rechercher zone, canal ou contact', all: 'Tous', pendingF: 'En attente',
         contact: 'Contact', channel: 'Canal', lang: 'Langue', area: 'Zone',
-        status: 'Statut', joined: 'Inscrit', last: 'Dernière alerte', never: 'jamais',
+        status: 'Statut', joined: 'Inscrit',
         empty: 'Aucun abonné pour l’instant.',
         emptyHint: 'Ils apparaîtront ici dès l’inscription sur la page Alertes.',
-        active2: 'Actif', inactive: 'Inactif', pending: 'En attente', refresh: 'Actualiser',
-        showing: 'affichés',
+        active2: 'Actif', inactive: 'Inactif', pending: 'En attente', showing: 'affichés',
     },
 } as const;
 
-// ── Minimal custom line icons (thin, monochrome — no icon library) ────────────
 const IconBack = () => (
     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
         strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
@@ -109,54 +105,61 @@ export default function SubscribersPage() {
     }, [subs, filter, query]);
 
     return (
-        <div className="min-h-screen bg-[#faf9f7]">
+        <div className="min-h-screen font-sans" style={{ background: 'var(--fw-paper)' }}>
             <Navbar />
 
             <div className="max-w-5xl mx-auto px-5 sm:px-8 py-10">
 
                 {/* top bar */}
-                <div className="flex items-center justify-between mb-9">
+                <div className="flex items-center justify-between mb-8 fw-rise">
                     <Link href="/admin"
-                        className="inline-flex items-center gap-1.5 text-[13px] text-stone-500
-                       hover:text-stone-900 transition-colors">
+                        className="inline-flex items-center gap-1.5 text-[13px] transition-colors"
+                        style={{ color: 'var(--fw-ink)', opacity: 0.55 }}>
                         <IconBack /> {t.back}
                     </Link>
-                    <div className="flex items-center gap-1 text-[12px] tracking-wide">
+                    <div className="flex items-center gap-1.5 text-[12px] tracking-wide">
                         <button onClick={() => setLang('en')}
-                            className={lang === 'en' ? 'text-stone-900 font-medium' : 'text-stone-400 hover:text-stone-600'}>
+                            style={{ color: lang === 'en' ? 'var(--fw-deep)' : 'var(--fw-ink)', opacity: lang === 'en' ? 1 : 0.45, fontWeight: lang === 'en' ? 600 : 400 }}>
                             EN
                         </button>
-                        <span className="text-stone-300">/</span>
+                        <span style={{ color: 'var(--fw-line)' }}>/</span>
                         <button onClick={() => setLang('fr')}
-                            className={lang === 'fr' ? 'text-stone-900 font-medium' : 'text-stone-400 hover:text-stone-600'}>
+                            style={{ color: lang === 'fr' ? 'var(--fw-deep)' : 'var(--fw-ink)', opacity: lang === 'fr' ? 1 : 0.45, fontWeight: lang === 'fr' ? 600 : 400 }}>
                             FR
                         </button>
                     </div>
                 </div>
 
-                {/* masthead title */}
-                <header className="mb-8">
-                    <h1 className="font-serif text-4xl sm:text-[2.7rem] leading-none text-stone-900 tracking-tight">
+                {/* header */}
+                <header className="mb-8 fw-rise fw-d1">
+                    <p className="text-[12px] tracking-[0.18em] uppercase mb-2" style={{ color: 'var(--fw-teal)' }}>
+                        {t.eyebrow}
+                    </p>
+                    <h1 className="text-3xl sm:text-[2.4rem] font-semibold tracking-tight leading-none"
+                        style={{ color: 'var(--fw-deep)' }}>
                         {t.title}
                     </h1>
-                    <p className="mt-3 text-[14px] text-stone-500 max-w-lg">{t.subtitle}</p>
-                    <div className="mt-6 h-px bg-stone-300" />
+                    <p className="mt-3 text-[14px] max-w-lg" style={{ color: 'var(--fw-ink)', opacity: 0.6 }}>
+                        {t.subtitle}
+                    </p>
                 </header>
 
-                {/* masthead stats */}
-                <div className="grid grid-cols-2 sm:grid-cols-4 divide-x divide-stone-200 mb-10
-                        border-y border-stone-200">
+                {/* stats strip */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 border-y mb-10 fw-rise fw-d2"
+                    style={{ borderColor: 'var(--fw-line)' }}>
                     {[
-                        { label: t.total, value: stats?.total },
-                        { label: t.verified, value: stats?.verified },
-                        { label: t.active, value: stats?.active },
-                        { label: t.reach, value: stats?.email_reachable },
+                        { label: t.total, value: stats?.total, accent: 'var(--fw-deep)' },
+                        { label: t.verified, value: stats?.verified, accent: 'var(--fw-teal)' },
+                        { label: t.active, value: stats?.active, accent: 'var(--fw-teal)' },
+                        { label: t.reach, value: stats?.email_reachable, accent: 'var(--fw-deep)' },
                     ].map((s, i) => (
-                        <div key={i} className="px-4 py-5 first:pl-0">
-                            <div className="font-serif text-3xl text-stone-900 tabular-nums leading-none">
+                        <div key={i} className={`px-4 py-5 ${i < 3 ? 'border-r' : ''} ${i < 2 ? 'border-b sm:border-b-0' : ''}`}
+                            style={{ borderColor: 'var(--fw-line)' }}>
+                            <div className="text-3xl font-semibold tabular-nums leading-none" style={{ color: s.accent }}>
                                 {isLoading ? '—' : (s.value ?? 0)}
                             </div>
-                            <div className="mt-2 text-[10.5px] uppercase tracking-[0.14em] text-stone-400">
+                            <div className="mt-2 text-[10.5px] uppercase tracking-[0.14em]"
+                                style={{ color: 'var(--fw-ink)', opacity: 0.45 }}>
                                 {s.label}
                             </div>
                         </div>
@@ -165,94 +168,90 @@ export default function SubscribersPage() {
 
                 {/* controls */}
                 <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-6">
-                    <div className="flex items-center gap-2 border-b border-stone-300 pb-1.5 flex-1
-                          focus-within:border-stone-900 transition-colors">
-                        <span className="text-stone-400"><IconSearch /></span>
+                    <div className="flex items-center gap-2 border-b pb-1.5 flex-1 transition-colors focus-within:border-[var(--fw-teal)]"
+                        style={{ borderColor: 'var(--fw-line)' }}>
+                        <span style={{ color: 'var(--fw-ink)', opacity: 0.4 }}><IconSearch /></span>
                         <input
                             value={query}
                             onChange={e => setQuery(e.target.value)}
                             placeholder={t.search}
-                            className="w-full bg-transparent text-[14px] text-stone-800
-                         placeholder:text-stone-400 outline-none"
+                            className="w-full bg-transparent text-[14px] outline-none"
+                            style={{ color: 'var(--fw-ink)' }}
                         />
                     </div>
 
                     <div className="flex items-center gap-5 text-[13px]">
                         {(['all', 'verified', 'pending'] as const).map(f => (
                             <button key={f} onClick={() => setFilter(f)}
-                                className={`pb-0.5 border-b transition-colors ${filter === f
-                                    ? 'text-stone-900 border-stone-900'
-                                    : 'text-stone-400 border-transparent hover:text-stone-600'
-                                    }`}>
+                                className="pb-0.5 border-b transition-colors"
+                                style={filter === f
+                                    ? { color: 'var(--fw-deep)', borderColor: 'var(--fw-teal)' }
+                                    : { color: 'var(--fw-ink)', opacity: 0.45, borderColor: 'transparent' }}>
                                 {f === 'all' ? t.all : f === 'verified' ? t.verified : t.pendingF}
                             </button>
                         ))}
                         <button onClick={() => refetch()}
-                            className="inline-flex items-center gap-1.5 text-stone-400 hover:text-stone-900
-                         transition-colors ml-1">
+                            className="inline-flex items-center gap-1.5 ml-1 transition-colors"
+                            style={{ color: 'var(--fw-ink)', opacity: 0.45 }}>
                             <span className={isFetching ? 'animate-spin' : ''}><IconRefresh /></span>
                         </button>
                     </div>
                 </div>
 
                 {/* table */}
-                <div className="border-t border-stone-300">
+                <div className="border-t" style={{ borderColor: 'var(--fw-line)' }}>
                     {/* header row */}
-                    <div className="hidden sm:grid grid-cols-[1.4fr_1fr_0.6fr_1fr_0.9fr_0.9fr]
-                          gap-4 py-2.5 text-[10.5px] uppercase tracking-[0.13em] text-stone-400">
+                    <div className="hidden sm:grid grid-cols-[1.4fr_1fr_0.6fr_1fr_0.9fr_0.9fr] gap-4 py-3 text-[10.5px] uppercase tracking-[0.13em]"
+                        style={{ color: 'var(--fw-ink)', opacity: 0.4 }}>
                         <div>{t.contact}</div><div>{t.channel}</div><div>{t.lang}</div>
                         <div>{t.area}</div><div>{t.status}</div><div className="text-right">{t.joined}</div>
                     </div>
 
                     {isLoading ? (
-                        <div className="divide-y divide-stone-100">
+                        <div className="divide-y" style={{ borderColor: 'var(--fw-line)' }}>
                             {[...Array(5)].map((_, i) => (
                                 <div key={i} className="py-4">
-                                    <div className="h-3.5 w-1/3 bg-stone-100 rounded-sm animate-pulse" />
+                                    <div className="h-3.5 w-1/3 rounded-sm animate-pulse" style={{ background: 'var(--fw-mist)' }} />
                                 </div>
                             ))}
                         </div>
                     ) : filtered.length === 0 ? (
                         <div className="py-20 text-center">
-                            <p className="font-serif text-lg text-stone-700">{t.empty}</p>
-                            <p className="mt-1.5 text-[13px] text-stone-400 max-w-xs mx-auto">{t.emptyHint}</p>
+                            <p className="text-lg font-medium" style={{ color: 'var(--fw-deep)' }}>{t.empty}</p>
+                            <p className="mt-1.5 text-[13px] max-w-xs mx-auto" style={{ color: 'var(--fw-ink)', opacity: 0.5 }}>
+                                {t.emptyHint}
+                            </p>
                         </div>
                     ) : (
-                        <div className="divide-y divide-stone-150 border-t border-stone-150">
-                            {filtered.map(s => {
+                        <div className="divide-y" style={{ borderColor: 'var(--fw-line)' }}>
+                            {filtered.map((s, idx) => {
                                 const st = statusOf(s);
+                                const dot = st === 'active' ? 'var(--fw-teal)' : st === 'pending' ? 'transparent' : 'var(--fw-line)';
                                 return (
                                     <div key={s.id}
-                                        className="grid grid-cols-2 sm:grid-cols-[1.4fr_1fr_0.6fr_1fr_0.9fr_0.9fr]
-                               gap-x-4 gap-y-1 py-4 items-center group">
-                                        {/* contact */}
-                                        <div className="font-mono text-[13px] text-stone-800 truncate">
+                                        className={`grid grid-cols-2 sm:grid-cols-[1.4fr_1fr_0.6fr_1fr_0.9fr_0.9fr] gap-x-4 gap-y-1 py-4 items-center transition-colors hover:bg-[var(--fw-mist)] -mx-3 px-3 rounded-lg fw-rise fw-d${Math.min(idx + 1, 4)}`}>
+                                        <div className="font-mono text-[13px] truncate" style={{ color: 'var(--fw-deep)' }}>
                                             {s.masked_email || s.phone_display || '—'}
                                         </div>
-                                        {/* channel */}
-                                        <div className="text-[13px] text-stone-600">
+                                        <div className="text-[13px]" style={{ color: 'var(--fw-ink)', opacity: 0.7 }}>
                                             {channelLabel(s.preferred_channel, lang)}
                                         </div>
-                                        {/* lang */}
-                                        <div className="text-[12px] uppercase tracking-wide text-stone-500">
+                                        <div className="text-[12px] uppercase tracking-wide" style={{ color: 'var(--fw-ink)', opacity: 0.55 }}>
                                             {s.language}
                                         </div>
-                                        {/* area */}
-                                        <div className="text-[13px] text-stone-600 truncate">
+                                        <div className="text-[13px] truncate" style={{ color: 'var(--fw-ink)', opacity: 0.7 }}>
                                             {s.subscription_area || '—'}
                                         </div>
-                                        {/* status */}
                                         <div className="flex items-center gap-2 text-[13px]">
-                                            <span className={`inline-block w-1.5 h-1.5 rounded-full ${st === 'active' ? 'bg-emerald-600'
-                                                : st === 'pending' ? 'border border-stone-400'
-                                                    : 'bg-stone-300'
-                                                }`} />
-                                            <span className="text-stone-600">
+                                            <span className="inline-block w-1.5 h-1.5 rounded-full"
+                                                style={st === 'pending'
+                                                    ? { border: '1px solid var(--fw-ink)', opacity: 0.4 }
+                                                    : { background: dot }} />
+                                            <span style={{ color: 'var(--fw-ink)', opacity: 0.7 }}>
                                                 {st === 'active' ? t.active2 : st === 'pending' ? t.pending : t.inactive}
                                             </span>
                                         </div>
-                                        {/* joined */}
-                                        <div className="text-[12.5px] text-stone-400 tabular-nums sm:text-right">
+                                        <div className="text-[12.5px] tabular-nums sm:text-right" style={{ color: 'var(--fw-ink)', opacity: 0.45 }}>
                                             {fmtDate(s.created_at, lang)}
                                         </div>
                                     </div>
@@ -262,9 +261,8 @@ export default function SubscribersPage() {
                     )}
                 </div>
 
-                {/* footer count */}
                 {!isLoading && filtered.length > 0 && (
-                    <p className="mt-5 text-[12px] text-stone-400">
+                    <p className="mt-5 text-[12px]" style={{ color: 'var(--fw-ink)', opacity: 0.45 }}>
                         {filtered.length} {t.showing}
                     </p>
                 )}
