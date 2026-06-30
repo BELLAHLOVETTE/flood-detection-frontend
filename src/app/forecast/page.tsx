@@ -5,24 +5,28 @@ import { useQuery } from '@tanstack/react-query';
 import Navbar from '@/components/Navbar';
 import { apiClient } from '@/lib/api';
 import type { FloodRiskForecastResponse } from '@/lib/api';
+import { useLanguage } from '@/lib/LanguageContext';
+import type { TranslationKey } from '@/lib/translations';
 import {
     BarChart, Bar, XAxis, YAxis, CartesianGrid,
     Tooltip, ResponsiveContainer, Cell, ReferenceLine,
 } from 'recharts';
 
-// Risk → single functional color. No emoji, no rainbow.
 const RISK_COLOR: Record<string, string> = {
     low: 'var(--fw-teal)',
     medium: '#b45309',
     high: '#c2410c',
     critical: '#991b1b',
 };
-const RISK_LABEL: Record<string, string> = {
-    low: 'Low', medium: 'Medium', high: 'High', critical: 'Critical',
+
+// Map API day names (English full) → translation key suffix
+const DAY_KEY: Record<string, string> = {
+    monday: 'mon', tuesday: 'tue', wednesday: 'wed', thursday: 'thu',
+    friday: 'fri', saturday: 'sat', sunday: 'sun',
 };
 
 export default function ForecastPage() {
-    // Demo toggle: blank = live data, or a rainy-season date for presentations
+    const { t, locale } = useLanguage();
     const [demoDate, setDemoDate] = useState<string>('');
 
     const { data, isLoading, error, refetch, isFetching } =
@@ -40,6 +44,20 @@ export default function ForecastPage() {
     const peak = data?.peak_risk_day;
     const peakColor = peak ? (RISK_COLOR[peak.risk_level] ?? 'var(--fw-teal)') : 'var(--fw-teal)';
 
+    // Translated risk label
+    const riskLabel = (level: string) => {
+        const key = `fc.risk.${level?.toLowerCase()}` as TranslationKey;
+        const out = t(key);
+        return out !== key ? out : level;
+    };
+    // Translated 3-letter day abbreviation from API's full English day name
+    const dayAbbr = (fullDay: string) => {
+        const suffix = DAY_KEY[fullDay?.toLowerCase()];
+        if (suffix) return t(`fc.day.${suffix}` as TranslationKey);
+        return fullDay.slice(0, 3);
+    };
+    const dateLocale = locale === 'fr' ? 'fr-FR' : 'en-GB';
+
     return (
         <div className="min-h-screen" style={{ background: 'var(--fw-paper)' }}>
             <Navbar />
@@ -51,38 +69,37 @@ export default function ForecastPage() {
                     <div>
                         <p className="text-[12px] tracking-[0.18em] uppercase mb-2"
                             style={{ color: 'var(--fw-teal)' }}>
-                            7-day outlook · Maga
+                            {t('fc.eyebrow')}
                         </p>
                         <h1 className="text-3xl sm:text-[2.2rem] font-semibold tracking-tight leading-none"
                             style={{ color: 'var(--fw-deep)' }}>
-                            Flood risk forecast
+                            {t('fc.title')}
                         </h1>
                         <p className="mt-3 text-[13px]" style={{ color: 'var(--fw-ink)', opacity: 0.55 }}>
                             {data?.generated_at
-                                ? `Generated ${new Date(data.generated_at).toLocaleString('en-GB')}`
-                                : 'Loading…'}
+                                ? t('fc.generated', { val: new Date(data.generated_at).toLocaleString(dateLocale) })
+                                : t('fc.loading')}
                             {data?.model_used && <> · {data.model_used}</>}
                         </p>
                     </div>
 
                     <div className="flex items-center gap-2">
-                        {/* Demo scenario toggle */}
                         <select
                             value={demoDate}
                             onChange={e => setDemoDate(e.target.value)}
                             className="text-[13px] rounded-full border px-4 py-2 bg-transparent outline-none transition-colors"
                             style={{ borderColor: 'var(--fw-line)', color: 'var(--fw-deep)' }}
                         >
-                            <option value="">Live data</option>
-                            <option value="2025-08-20">Demo · rainy season</option>
-                            <option value="2025-09-15">Demo · peak season</option>
+                            <option value="">{t('fc.demo.live')}</option>
+                            <option value="2025-08-20">{t('fc.demo.rainy')}</option>
+                            <option value="2025-09-15">{t('fc.demo.peak')}</option>
                         </select>
                         <button
                             onClick={() => refetch()}
                             className="text-[13px] rounded-full border px-4 py-2 transition-colors hover:bg-[var(--fw-mist)]"
                             style={{ borderColor: 'var(--fw-line)', color: 'var(--fw-deep)' }}
                         >
-                            <span className={isFetching ? 'inline-block animate-spin' : ''}>↻</span> Refresh
+                            <span className={isFetching ? 'inline-block animate-spin' : ''}>↻</span> {t('fc.refresh')}
                         </button>
                     </div>
                 </div>
@@ -90,11 +107,11 @@ export default function ForecastPage() {
                 {error && (
                     <div className="rounded-xl border px-5 py-4 mb-8 text-[14px]"
                         style={{ borderColor: '#fecaca', background: '#fef2f2', color: '#991b1b' }}>
-                        Couldn’t load the forecast. Check your connection and try Refresh.
+                        {t('fc.error')}
                     </div>
                 )}
 
-                {/* Peak callout — only when genuinely elevated */}
+                {/* Peak callout */}
                 {peak && (peak.risk_level === 'high' || peak.risk_level === 'critical') && (
                     <div className="rounded-2xl px-6 py-5 mb-9 fw-rise"
                         style={{ background: 'var(--fw-deep)' }}>
@@ -103,21 +120,27 @@ export default function ForecastPage() {
                                 style={{ background: peakColor }} />
                             <div>
                                 <p className="text-white font-medium">
-                                    Peak {RISK_LABEL[peak.risk_level]} risk · {peak.day_label} {peak.forecast_date}
+                                    {t('fc.peak.label', {
+                                        level: riskLabel(peak.risk_level),
+                                        day: dayAbbr(peak.day_label),
+                                        date: peak.forecast_date,
+                                    })}
                                 </p>
                                 <p className="text-white/65 text-[14px] mt-1">
-                                    {((peak.probability ?? 0) * 100).toFixed(0)}% flood probability ·{' '}
-                                    {Number(peak.predicted_rain ?? 0).toFixed(0)} mm predicted rainfall.{' '}
+                                    {t('fc.peak.detail', {
+                                        prob: ((peak.probability ?? 0) * 100).toFixed(0),
+                                        rain: Number(peak.predicted_rain ?? 0).toFixed(0),
+                                    })}{' '}
                                     {peak.risk_level === 'critical'
-                                        ? 'Preparation and possible evacuation may be needed.'
-                                        : 'Residents and authorities should stay alert.'}
+                                        ? t('fc.peak.critical')
+                                        : t('fc.peak.high')}
                                 </p>
                             </div>
                         </div>
                     </div>
                 )}
 
-                {/* Day strip — hairline cells, animated in */}
+                {/* Day strip */}
                 <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-px rounded-2xl overflow-hidden mb-10"
                     style={{ background: 'var(--fw-line)' }}>
                     {isLoading
@@ -135,13 +158,12 @@ export default function ForecastPage() {
                                     style={{ background: isPeak ? 'var(--fw-mist)' : 'var(--fw-paper)' }}>
                                     <p className="text-[10.5px] uppercase tracking-[0.1em]"
                                         style={{ color: 'var(--fw-ink)', opacity: 0.5 }}>
-                                        {index === 0 ? 'Tomorrow' : day.day_label.slice(0, 3)}
+                                        {index === 0 ? t('fc.tomorrow') : dayAbbr(day.day_label)}
                                     </p>
                                     <p className="text-[11px] mb-3" style={{ color: 'var(--fw-ink)', opacity: 0.4 }}>
-                                        {new Date(day.forecast_date).toLocaleDateString('en-GB',
+                                        {new Date(day.forecast_date).toLocaleDateString(dateLocale,
                                             { day: '2-digit', month: '2-digit' })}
                                     </p>
-                                    {/* probability ring */}
                                     <div className="relative w-12 h-12 mx-auto mb-3">
                                         <svg className="absolute inset-0 -rotate-90" viewBox="0 0 48 48">
                                             <circle cx="24" cy="24" r="20" fill="none"
@@ -157,14 +179,14 @@ export default function ForecastPage() {
                                         </span>
                                     </div>
                                     <p className="text-[12px] font-medium" style={{ color }}>
-                                        {RISK_LABEL[day.risk_level] ?? 'Low'}
+                                        {riskLabel(day.risk_level)}
                                     </p>
                                     <p className="text-[11.5px] mt-1" style={{ color: 'var(--fw-teal)' }}>
                                         {Number(rain).toFixed(0)} mm
                                     </p>
                                     {isPeak && (
                                         <p className="text-[9px] uppercase tracking-[0.12em] mt-2"
-                                            style={{ color: peakColor }}>Peak</p>
+                                            style={{ color: peakColor }}>{t('fc.peak.tag')}</p>
                                     )}
                                 </div>
                             );
@@ -173,25 +195,25 @@ export default function ForecastPage() {
 
                 {/* Charts */}
                 <div className="grid lg:grid-cols-2 gap-6 mb-10">
-                    <ChartFrame title="Flood probability" caption="% per day">
+                    <ChartFrame title={t('fc.chart.prob.title')} caption={t('fc.chart.prob.caption')}>
                         {isLoading
                             ? <Skel />
                             : (
                                 <ResponsiveContainer width="100%" height={210}>
                                     <BarChart data={forecast.map(d => ({
-                                        name: d.day_label.slice(0, 3),
+                                        name: dayAbbr(d.day_label),
                                         value: Math.round((d.probability ?? 0) * 100),
                                     }))} margin={{ top: 8, right: 8, left: -12, bottom: 4 }}>
                                         <CartesianGrid strokeDasharray="2 4" stroke="var(--fw-line)" vertical={false} />
                                         <XAxis dataKey="name" tick={{ fontSize: 11, fill: '#7a8c8e' }} axisLine={false} tickLine={false} />
                                         <YAxis domain={[0, 100]} tick={{ fontSize: 11, fill: '#7a8c8e' }}
                                             tickFormatter={v => `${v}%`} axisLine={false} tickLine={false} />
-                                        <Tooltip formatter={(v) => [`${Number(v).toFixed(0)}%`, 'Probability']}
+                                        <Tooltip formatter={(v) => [`${Number(v).toFixed(0)}%`, t('fc.chart.prob.tooltip')]}
                                             contentStyle={{ borderRadius: 12, border: '1px solid var(--fw-line)', fontSize: 12 }} />
                                         <ReferenceLine y={30} stroke="#b45309" strokeDasharray="3 3"
-                                            label={{ value: 'Medium', fontSize: 9, fill: '#b45309' }} />
+                                            label={{ value: t('fc.risk.medium'), fontSize: 9, fill: '#b45309' }} />
                                         <ReferenceLine y={60} stroke="#c2410c" strokeDasharray="3 3"
-                                            label={{ value: 'High', fontSize: 9, fill: '#c2410c' }} />
+                                            label={{ value: t('fc.risk.high'), fontSize: 9, fill: '#c2410c' }} />
                                         <Bar dataKey="value" radius={[5, 5, 0, 0]}>
                                             {forecast.map((d, i) => (
                                                 <Cell key={i} fill={RISK_COLOR[d.risk_level] ?? 'var(--fw-teal)'} />
@@ -202,19 +224,19 @@ export default function ForecastPage() {
                             )}
                     </ChartFrame>
 
-                    <ChartFrame title="Predicted rainfall" caption="mm per day">
+                    <ChartFrame title={t('fc.chart.rain.title')} caption={t('fc.chart.rain.caption')}>
                         {isLoading
                             ? <Skel />
                             : (
                                 <ResponsiveContainer width="100%" height={210}>
                                     <BarChart data={forecast.map(d => ({
-                                        name: d.day_label.slice(0, 3),
+                                        name: dayAbbr(d.day_label),
                                         rain: Number((d.predicted_rain ?? d.predicted_mm ?? 0).toFixed(1)),
                                     }))} margin={{ top: 8, right: 8, left: -12, bottom: 4 }}>
                                         <CartesianGrid strokeDasharray="2 4" stroke="var(--fw-line)" vertical={false} />
                                         <XAxis dataKey="name" tick={{ fontSize: 11, fill: '#7a8c8e' }} axisLine={false} tickLine={false} />
                                         <YAxis tick={{ fontSize: 11, fill: '#7a8c8e' }} axisLine={false} tickLine={false} />
-                                        <Tooltip formatter={(v) => [`${Number(v).toFixed(1)} mm`, 'Rainfall']}
+                                        <Tooltip formatter={(v) => [`${Number(v).toFixed(1)} mm`, t('fc.chart.rain.tooltip')]}
                                             contentStyle={{ borderRadius: 12, border: '1px solid var(--fw-line)', fontSize: 12 }} />
                                         <Bar dataKey="rain" fill="var(--fw-teal)" radius={[5, 5, 0, 0]} />
                                     </BarChart>
@@ -223,18 +245,15 @@ export default function ForecastPage() {
                     </ChartFrame>
                 </div>
 
-                {/* Methodology — quiet prose, not a boxed banner */}
+                {/* Methodology */}
                 <div className="border-t pt-7" style={{ borderColor: 'var(--fw-line)' }}>
                     <p className="text-[11px] uppercase tracking-[0.16em] mb-3"
                         style={{ color: 'var(--fw-teal)' }}>
-                        How this forecast is made
+                        {t('fc.method.eyebrow')}
                     </p>
                     <p className="text-[13.5px] leading-relaxed max-w-3xl"
                         style={{ color: 'var(--fw-ink)', opacity: 0.7 }}>
-                        Flood probability combines a Random Forest model trained on 25 years of CHIRPS
-                        rainfall (2000–2025) with a seasonal climatology baseline for Maga. Daily rainfall
-                        estimates use CHIRPS historical averages for the time of year. Sources: NOAA GFS,
-                        CHIRPS, Sentinel-1 SAR, JRC water extent.
+                        {t('fc.method.body')}
                     </p>
                 </div>
             </div>

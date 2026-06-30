@@ -410,6 +410,110 @@ export const translations = {
   'db.risk.medium': { en: 'Medium', fr: 'Modéré' },
   'db.risk.high': { en: 'High', fr: 'Élevé' },
   'db.risk.critical': { en: 'Critical', fr: 'Critique' },
+  // Forecast Page
+  'fc.eyebrow': {
+    en: '7-day outlook · Maga',
+    fr: 'Prévisions 7 jours · Maga',
+  },
+  'fc.title': {
+    en: 'Flood risk forecast',
+    fr: 'Prévision des risques d\'inondation',
+  },
+  'fc.generated': {
+    en: 'Generated {val}',
+    fr: 'Généré le {val}',
+  },
+  'fc.loading': {
+    en: 'Loading…',
+    fr: 'Chargement…',
+  },
+  'fc.demo.live': {
+    en: 'Live data',
+    fr: 'Données en direct',
+  },
+  'fc.demo.rainy': {
+    en: 'Demo · rainy season',
+    fr: 'Démo · saison des pluies',
+  },
+  'fc.demo.peak': {
+    en: 'Demo · peak season',
+    fr: 'Démo · pic de saison',
+  },
+  'fc.refresh': {
+    en: 'Refresh',
+    fr: 'Actualiser',
+  },
+  'fc.error': {
+    en: 'Couldn\'t load the forecast. Check your connection and try Refresh.',
+    fr: 'Impossible de charger les prévisions. Vérifiez votre connexion et actualisez.',
+  },
+  'fc.peak.label': {
+    en: 'Peak {level} risk · {day} {date}',
+    fr: 'Pic de risque {level} · {day} {date}',
+  },
+  'fc.peak.detail': {
+    en: '{prob}% flood probability · {rain} mm predicted rainfall.',
+    fr: '{prob}% de probabilité d\'inondation · {rain} mm de pluie prévue.',
+  },
+  'fc.peak.critical': {
+    en: 'Preparation and possible evacuation may be needed.',
+    fr: 'Une préparation et une éventuelle évacuation peuvent être nécessaires.',
+  },
+  'fc.peak.high': {
+    en: 'Residents and authorities should stay alert.',
+    fr: 'Les habitants et les autorités doivent rester vigilants.',
+  },
+  'fc.tomorrow': {
+    en: 'Tomorrow',
+    fr: 'Demain',
+  },
+  'fc.peak.tag': {
+    en: 'Peak',
+    fr: 'Pic',
+  },
+  'fc.chart.prob.title': {
+    en: 'Flood probability',
+    fr: 'Probabilité d\'inondation',
+  },
+  'fc.chart.prob.caption': {
+    en: '% per day',
+    fr: '% par jour',
+  },
+  'fc.chart.prob.tooltip': {
+    en: 'Probability',
+    fr: 'Probabilité',
+  },
+  'fc.chart.rain.title': {
+    en: 'Predicted rainfall',
+    fr: 'Pluie prévue',
+  },
+  'fc.chart.rain.caption': {
+    en: 'mm per day',
+    fr: 'mm par jour',
+  },
+  'fc.chart.rain.tooltip': {
+    en: 'Rainfall',
+    fr: 'Pluie',
+  },
+  'fc.method.eyebrow': {
+    en: 'How this forecast is made',
+    fr: 'Comment ces prévisions sont établies',
+  },
+  'fc.method.body': {
+    en: 'Flood probability combines a Random Forest model trained on 25 years of CHIRPS rainfall (2000–2025) with a seasonal climatology baseline for Maga. Daily rainfall estimates use CHIRPS historical averages for the time of year. Sources: NOAA GFS, CHIRPS, Sentinel-1 SAR, JRC water extent.',
+    fr: 'La probabilité d\'inondation combine un modèle Random Forest entraîné sur 25 ans de pluie CHIRPS (2000–2025) avec une base climatologique saisonnière pour Maga. Les estimations quotidiennes de pluie utilisent les moyennes historiques CHIRPS pour la période. Sources : NOAA GFS, CHIRPS, Sentinel-1 SAR, étendue d\'eau JRC.',
+  },
+  'fc.risk.low': { en: 'Low', fr: 'Faible' },
+  'fc.risk.medium': { en: 'Medium', fr: 'Modéré' },
+  'fc.risk.high': { en: 'High', fr: 'Élevé' },
+  'fc.risk.critical': { en: 'Critical', fr: 'Critique' },
+  'fc.day.mon': { en: 'Mon', fr: 'Lun' },
+  'fc.day.tue': { en: 'Tue', fr: 'Mar' },
+  'fc.day.wed': { en: 'Wed', fr: 'Mer' },
+  'fc.day.thu': { en: 'Thu', fr: 'Jeu' },
+  'fc.day.fri': { en: 'Fri', fr: 'Ven' },
+  'fc.day.sat': { en: 'Sat', fr: 'Sam' },
+  'fc.day.sun': { en: 'Sun', fr: 'Dim' },
 
   // Login Page
   'login.toast.success': {
