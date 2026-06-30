@@ -152,3 +152,9 @@ export interface AdminSubscribersResponse {
 
 export const getAdminSubscribers = (): Promise<AdminSubscribersResponse> =>
     apiClient.get('/admin/subscribers/').then(r => r.data);
+
+export const requestPasswordReset = (email: string): Promise<{ message: string }> =>
+    apiClient.post('/auth/password-reset/', { email }).then(r => r.data);
+
+export const confirmPasswordReset = (uid: string, token: string, password: string): Promise<{ message: string }> =>
+    apiClient.post('/auth/password-reset-confirm/', { uid, token, password }).then(r => r.data);

@@ -209,14 +209,25 @@ function LoginContent() {
                                     <PasswordField value={password} onChange={setPassword}
                                         show={showPw} toggle={() => setShowPw(!showPw)} />
                                     <div className="text-right">
-                                        <span className="text-[13px] cursor-default" style={{ color: 'var(--fw-teal)', opacity: 0.7 }}>
+                                        <button type="button"
+                                            onClick={async () => {
+                                                const em = window.prompt('Enter your account email to receive a reset link:');
+                                                if (!em) return;
+                                                try {
+                                                    const { requestPasswordReset } = await import('@/lib/api');
+                                                    await requestPasswordReset(em.trim());
+                                                    toast.success('If that email is registered, a reset link has been sent. Check your inbox (and spam).');
+                                                } catch {
+                                                    toast.error('Could not send reset link. Please try again.');
+                                                }
+                                            }}
+                                            className="text-[13px]" style={{ color: 'var(--fw-teal)' }}>
                                             Forgot password?
-                                        </span>
+                                        </button>
                                     </div>
                                     <SubmitButton loading={loading} label="Sign In" />
                                 </form>
                             )}
-
                             {mode === 'signup' && (
                                 <form onSubmit={handleSignUp} className="space-y-4">
                                     <Field icon={<User className="w-4 h-4" />} placeholder="Username"
