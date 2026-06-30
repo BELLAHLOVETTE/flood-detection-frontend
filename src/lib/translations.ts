@@ -52,6 +52,18 @@ export const translations = {
     en: 'Logged out successfully',
     fr: 'Déconnexion réussie',
   },
+  'nav.forecast': {
+    en: 'Forecast',
+    fr: 'Prévisions',
+  },
+  'nav.about': {
+    en: 'About',
+    fr: 'À propos',
+  },
+  'nav.register': {
+    en: 'Register as Authority',
+    fr: 'S\'inscrire comme autorité',
+  },
 
   // Landing Page
   'landing.hero.badge': {

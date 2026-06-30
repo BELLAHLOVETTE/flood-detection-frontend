@@ -7,24 +7,22 @@ export default function LanguageToggle() {
   const { locale, setLocale } = useLanguage();
 
   return (
-    <div className="inline-flex p-0.5 bg-gray-100 rounded-lg border border-gray-200/50">
+    <div className="inline-flex p-0.5 rounded-full" style={{ background: 'var(--fw-mist)' }}>
       <button
         onClick={() => setLocale('en')}
-        className={`px-2.5 py-1 text-xs font-semibold rounded-md transition-all duration-200 ${
-          locale === 'en'
-            ? 'bg-white text-blue-700 shadow-sm'
-            : 'text-gray-400 hover:text-gray-600'
-        }`}
+        className="px-2.5 py-1 text-[11.5px] font-semibold rounded-full transition-all duration-200"
+        style={locale === 'en'
+          ? { background: '#fff', color: 'var(--fw-deep)', boxShadow: '0 1px 2px rgba(0,0,0,0.08)' }
+          : { color: 'var(--fw-ink)', opacity: 0.5 }}
       >
         EN
       </button>
       <button
         onClick={() => setLocale('fr')}
-        className={`px-2.5 py-1 text-xs font-semibold rounded-md transition-all duration-200 ${
-          locale === 'fr'
-            ? 'bg-white text-blue-700 shadow-sm'
-            : 'text-gray-400 hover:text-gray-600'
-        }`}
+        className="px-2.5 py-1 text-[11.5px] font-semibold rounded-full transition-all duration-200"
+        style={locale === 'fr'
+          ? { background: '#fff', color: 'var(--fw-deep)', boxShadow: '0 1px 2px rgba(0,0,0,0.08)' }
+          : { color: 'var(--fw-ink)', opacity: 0.5 }}
       >
         FR
       </button>

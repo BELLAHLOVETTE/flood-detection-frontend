@@ -4,26 +4,28 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
-import { cn } from '@/lib/utils';
 import { isAuthenticated, logout } from '@/lib/auth';
 import toast from 'react-hot-toast';
+import { useLanguage } from '@/lib/LanguageContext';
+import LanguageToggle from '@/components/LanguageToggle';
 import {
     LayoutDashboard, Map, History, Bell,
     Menu, X, LogIn, LogOut, Shield, TrendingUp, Info,
 } from 'lucide-react';
 
 const navLinks = [
-    { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { href: '/forecast', label: 'Forecast', icon: TrendingUp },
-    { href: '/map', label: 'Map', icon: Map },
-    { href: '/history', label: 'History', icon: History },
-    { href: '/alerts', label: 'Alerts', icon: Bell },
-    { href: '/about', label: 'About', icon: Info },
-];
+    { href: '/dashboard', key: 'nav.dashboard', icon: LayoutDashboard },
+    { href: '/forecast', key: 'nav.forecast', icon: TrendingUp },
+    { href: '/map', key: 'nav.map', icon: Map },
+    { href: '/history', key: 'nav.history', icon: History },
+    { href: '/alerts', key: 'nav.alerts', icon: Bell },
+    { href: '/about', key: 'nav.about', icon: Info },
+] as const;
 
 export default function Navbar() {
     const pathname = usePathname();
     const router = useRouter();
+    const { t } = useLanguage();
     const [open, setOpen] = useState(false);
     const [authed, setAuthed] = useState(false);
 
@@ -38,7 +40,7 @@ export default function Navbar() {
     async function handleLogout() {
         await logout();
         setAuthed(false);
-        toast.success('Logged out successfully');
+        toast.success(t('toast.logout_success'));
         router.push('/');
     }
 
@@ -67,14 +69,14 @@ export default function Navbar() {
                             </p>
                             <p className="text-[11px] leading-none mt-0.5"
                                 style={{ color: 'var(--fw-teal)' }}>
-                                Cameroon
+                                {t('nav.cameroon')}
                             </p>
                         </div>
                     </Link>
 
                     {/* Desktop nav links */}
                     <div className="hidden md:flex items-center gap-0.5">
-                        {navLinks.map(({ href, label, icon: Icon }) => {
+                        {navLinks.map(({ href, key, icon: Icon }) => {
                             const active = pathname === href;
                             return (
                                 <Link
@@ -102,7 +104,7 @@ export default function Navbar() {
                                     }}
                                 >
                                     <Icon className="w-4 h-4" />
-                                    {label}
+                                    {t(key)}
                                 </Link>
                             );
                         })}
@@ -110,6 +112,8 @@ export default function Navbar() {
 
                     {/* Desktop right side */}
                     <div className="hidden md:flex items-center gap-3">
+                        <LanguageToggle />
+
                         <div className="flex items-center gap-1.5 text-[11.5px]"
                             style={{ color: 'var(--fw-ink)', opacity: 0.5 }}>
                             <span className="relative flex h-2 w-2">
@@ -118,7 +122,7 @@ export default function Navbar() {
                                 <span className="relative inline-flex h-2 w-2 rounded-full"
                                     style={{ background: 'var(--fw-teal)' }} />
                             </span>
-                            Live — Maga
+                            {t('nav.live')}
                         </div>
 
                         {authed ? (
@@ -129,7 +133,7 @@ export default function Navbar() {
                                     style={{ background: 'var(--fw-mist)', color: 'var(--fw-deep)' }}
                                 >
                                     <Shield className="w-3.5 h-3.5" />
-                                    Admin
+                                    {t('nav.admin')}
                                 </Link>
                                 <button
                                     onClick={handleLogout}
@@ -137,7 +141,7 @@ export default function Navbar() {
                                     style={{ color: 'var(--fw-ink)', opacity: 0.6 }}
                                 >
                                     <LogOut className="w-3.5 h-3.5" />
-                                    Logout
+                                    {t('nav.logout')}
                                 </button>
                             </>
                         ) : (
@@ -147,7 +151,7 @@ export default function Navbar() {
                                 style={{ borderColor: 'var(--fw-line)', color: 'var(--fw-deep)' }}
                             >
                                 <LogIn className="w-3.5 h-3.5" />
-                                Login
+                                {t('nav.login')}
                             </Link>
                         )}
                     </div>
@@ -170,7 +174,13 @@ export default function Navbar() {
                 <div className="md:hidden border-t"
                     style={{ borderColor: 'var(--fw-line)', background: 'var(--fw-paper)' }}>
                     <div className="px-4 py-3 space-y-1">
-                        {navLinks.map(({ href, label, icon: Icon }) => {
+
+                        {/* language toggle on mobile */}
+                        <div className="flex justify-center pb-2">
+                            <LanguageToggle />
+                        </div>
+
+                        {navLinks.map(({ href, key, icon: Icon }) => {
                             const active = pathname === href;
                             return (
                                 <Link
@@ -184,7 +194,7 @@ export default function Navbar() {
                                     }
                                 >
                                     <Icon className="w-4 h-4" />
-                                    {label}
+                                    {t(key)}
                                 </Link>
                             );
                         })}
@@ -199,7 +209,7 @@ export default function Navbar() {
                                         style={{ color: 'var(--fw-deep)' }}
                                     >
                                         <Shield className="w-4 h-4" />
-                                        Admin Dashboard
+                                        {t('nav.adminDashboard')}
                                     </Link>
                                     <button
                                         onClick={handleLogout}
@@ -207,7 +217,7 @@ export default function Navbar() {
                                         style={{ color: '#c2410c' }}
                                     >
                                         <LogOut className="w-4 h-4" />
-                                        Logout
+                                        {t('nav.logout')}
                                     </button>
                                 </>
                             ) : (
@@ -218,7 +228,7 @@ export default function Navbar() {
                                         style={{ color: 'var(--fw-ink)' }}
                                     >
                                         <LogIn className="w-4 h-4" />
-                                        Login
+                                        {t('nav.login')}
                                     </Link>
                                     <Link
                                         href="/signup"
@@ -226,7 +236,7 @@ export default function Navbar() {
                                         style={{ color: 'var(--fw-teal)' }}
                                     >
                                         <Shield className="w-4 h-4" />
-                                        Register as Authority
+                                        {t('nav.register')}
                                     </Link>
                                 </>
                             )}
