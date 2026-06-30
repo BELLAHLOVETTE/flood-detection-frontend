@@ -722,6 +722,18 @@ export const translations = {
     en: '{val} recipients',
     fr: '{val} destinataires',
   },
+  'alerts.privacy': {
+    en: 'Your data is encrypted and never shared.',
+    fr: 'Vos données sont chiffrées et jamais partagées.',
+  },
+  'alerts.history.subtitle': {
+    en: 'Recent alerts sent to subscribers',
+    fr: 'Alertes récentes envoyées aux abonnés',
+  },
+  'alerts.error.generic': {
+    en: 'An error occurred. Please try again.',
+    fr: 'Une erreur s\'est produite. Veuillez réessayer.',
+  },
 
   // History Page
   'hist.title': {

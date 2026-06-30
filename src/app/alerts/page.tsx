@@ -67,7 +67,7 @@ export default function AlertsPage() {
             const axiosErr = err as { response?: { data?: { non_field_errors?: string[] } } };
             setError(
                 axiosErr?.response?.data?.non_field_errors?.[0] ||
-                'An error occurred. Please try again.'
+                t('alerts.error.generic')
             );
         } finally {
             setLoading(false);
@@ -253,7 +253,7 @@ export default function AlertsPage() {
 
                                     <p className="flex items-center justify-center gap-1.5 text-xs text-slate-400">
                                         <ShieldCheck className="h-3.5 w-3.5" />
-                                        {'Your data is encrypted and never shared.'}
+                                        {t('alerts.privacy')}
                                     </p>
                                 </div>
                             )}
@@ -356,7 +356,7 @@ export default function AlertsPage() {
                             <div className="flex items-center justify-between mb-5">
                                 <div>
                                     <h2 className="text-xl font-bold text-slate-900">{t('alerts.history.title')}</h2>
-                                    <p className="text-sm text-slate-500 mt-0.5">Recent alerts sent to subscribers</p>
+                                    <p className="text-sm text-slate-500 mt-0.5">{t('alerts.history.subtitle')}</p>
                                 </div>
                                 <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold ring-1"
                                     style={{ background: 'var(--fw-mist)', color: 'var(--fw-deep)', borderColor: 'var(--fw-line)' }}>
