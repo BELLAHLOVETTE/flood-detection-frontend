@@ -1271,6 +1271,73 @@ export const translations = {
     en: 'Filling',
     fr: 'Remplissage',
   },
+  // Admin page (remaining hardcoded)
+  'admin.eyebrow': {
+    en: 'Authority console',
+    fr: 'Console autorité',
+  },
+  'admin.view_subscribers': {
+    en: 'View subscribers',
+    fr: 'Voir les abonnés',
+  },
+  'admin.kpi.rain_7d_total': {
+    en: '7-day total',
+    fr: 'Total 7 jours',
+  },
+  'admin.recipients': {
+    en: 'recipients',
+    fr: 'destinataires',
+  },
+  'admin.email_label': {
+    en: 'email',
+    fr: 'email',
+  },
+  'admin.manual': {
+    en: 'Manual',
+    fr: 'Manuel',
+  },
+  'admin.auto': {
+    en: 'Auto',
+    fr: 'Auto',
+  },
+  'admin.pending': {
+    en: 'Pending…',
+    fr: 'En attente…',
+  },
+
+  // Subscribers page
+  'subs.back': { en: 'Back to admin', fr: 'Retour admin' },
+  'subs.eyebrow': { en: 'Authority console', fr: 'Console autorité' },
+  'subs.title': { en: 'Subscribers', fr: 'Abonnés' },
+  'subs.subtitle': {
+    en: 'People registered to receive flood alerts for Maga.',
+    fr: 'Personnes inscrites pour recevoir les alertes d\'inondation à Maga.',
+  },
+  'subs.total': { en: 'Total', fr: 'Total' },
+  'subs.verified': { en: 'Verified', fr: 'Vérifiés' },
+  'subs.active': { en: 'Active', fr: 'Actifs' },
+  'subs.reach': { en: 'Email-reachable', fr: 'Joignables e-mail' },
+  'subs.search': { en: 'Search area, channel or contact', fr: 'Rechercher zone, canal ou contact' },
+  'subs.all': { en: 'All', fr: 'Tous' },
+  'subs.pending_filter': { en: 'Pending', fr: 'En attente' },
+  'subs.col.contact': { en: 'Contact', fr: 'Contact' },
+  'subs.col.channel': { en: 'Channel', fr: 'Canal' },
+  'subs.col.lang': { en: 'Lang', fr: 'Langue' },
+  'subs.col.area': { en: 'Area', fr: 'Zone' },
+  'subs.col.status': { en: 'Status', fr: 'Statut' },
+  'subs.col.joined': { en: 'Joined', fr: 'Inscrit' },
+  'subs.empty': { en: 'No subscribers yet.', fr: 'Aucun abonné pour l\'instant.' },
+  'subs.empty_hint': {
+    en: 'They will appear here once people register on the Alerts page.',
+    fr: 'Ils apparaîtront ici dès l\'inscription sur la page Alertes.',
+  },
+  'subs.status.active': { en: 'Active', fr: 'Actif' },
+  'subs.status.inactive': { en: 'Inactive', fr: 'Inactif' },
+  'subs.status.pending': { en: 'Pending', fr: 'En attente' },
+  'subs.showing': { en: 'showing', fr: 'affichés' },
+  'subs.channel.email': { en: 'Email', fr: 'E-mail' },
+  'subs.channel.sms': { en: 'SMS', fr: 'SMS' },
+  'subs.channel.both': { en: 'Email + SMS', fr: 'E-mail + SMS' },
 
   // Live Risk Banner
   'banner.critical': {

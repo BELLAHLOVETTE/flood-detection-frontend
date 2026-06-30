@@ -80,7 +80,7 @@ export default function AdminPage() {
                 <div className="flex items-end justify-between mb-8 flex-wrap gap-4 fw-rise">
                     <div>
                         <p className="text-[12px] tracking-[0.18em] uppercase mb-2" style={{ color: 'var(--fw-teal)' }}>
-                            Authority console
+                            {t('admin.eyebrow')}
                         </p>
                         <h1 className="text-3xl sm:text-[2.2rem] font-semibold tracking-tight leading-none"
                             style={{ color: 'var(--fw-deep)' }}>
@@ -93,7 +93,7 @@ export default function AdminPage() {
                     <Link href="/admin/subscribers"
                         className="px-4 py-2 text-[13px] font-medium rounded-full border transition-colors hover:bg-[var(--fw-mist)]"
                         style={{ borderColor: 'var(--fw-line)', color: 'var(--fw-deep)' }}>
-                        View subscribers
+                        {t('admin.view_subscribers')}
                     </Link>
                 </div>
 
@@ -104,7 +104,7 @@ export default function AdminPage() {
                         { label: t('admin.kpi.risk'), value: riskBadgeLabel(currentRisk.risk_level), sub: t('admin.kpi.probability', { val: (currentRisk.probability * 100).toFixed(0) }), accent: rc },
                         { label: t('admin.kpi.subscribers'), value: formatNumber(subs?.count ?? 0), sub: t('admin.kpi.subscribers_sub') },
                         { label: t('admin.kpi.alerts'), value: String(alerts.length), sub: t('admin.kpi.alerts_sub') },
-                        { label: t('admin.kpi.rain'), value: rainfall[0] ? `${rainfall[0].cumulative_7d.toFixed(0)} mm` : '—', sub: '7-day total' },
+                        { label: t('admin.kpi.rain'), value: rainfall[0] ? `${rainfall[0].cumulative_7d.toFixed(0)} mm` : '—', sub: t('admin.kpi.rain_7d_total') },
                     ].map((k, i) => (
                         <div key={i} className={cn('px-5 py-6', i < 3 && 'border-r', i < 2 && 'border-b lg:border-b-0')}
                             style={{ borderColor: 'var(--fw-line)' }}>
@@ -309,7 +309,7 @@ export default function AdminPage() {
                                 </div>
                             </div>
                             <p className="text-[12px] mt-4" style={{ color: 'var(--fw-ink)', opacity: 0.45 }}>
-                                {risk?.assessed_at ? `${t('db.updated')} ${timeAgo(risk.assessed_at, locale)}` : 'Pending…'}
+                                {risk?.assessed_at ? `${t('db.updated')} ${timeAgo(risk.assessed_at, locale)}` : t('admin.pending')}
                             </p>
                         </div>
 
@@ -346,10 +346,10 @@ export default function AdminPage() {
                                                     {locale === 'fr' ? alert.message_fr : (alert.message_en || alert.message_fr)}
                                                 </p>
                                                 <div className="flex items-center gap-3 mt-1.5" style={{ color: 'var(--fw-ink)', opacity: 0.45 }}>
-                                                    <span>{alert.total_recipients} recipients</span>
-                                                    <span>{alert.email_sent} email</span>
+                                                    <span>{alert.total_recipients} {t('admin.recipients')}</span>
+                                                    <span>{alert.email_sent} {t('admin.email_label')}</span>
                                                     <span className="ml-auto">
-                                                        {alert.alert_type === 'manual' ? 'Manual' : 'Auto'}
+                                                        {alert.alert_type === 'manual' ? t('admin.manual') : t('admin.auto')}
                                                     </span>
                                                 </div>
                                             </div>
