@@ -874,6 +874,14 @@ export const translations = {
     en: 'Risk level:',
     fr: 'Niveau de risque:',
   },
+  'map.eyebrow': {
+    en: 'Maga · Cameroon',
+    fr: 'Maga · Cameroun',
+  },
+  'map.villages': {
+    en: 'villages',
+    fr: 'villages',
+  },
 
   // Admin Layout
   'admin.layout.checking': {

@@ -17,6 +17,14 @@ const RISK_COLOR: Record<string, string> = {
 };
 const RISK_RANK = { critical: 0, high: 1, medium: 2, low: 3 } as const;
 
+// Map each legend level to its existing translation key
+const LEGEND_KEY = {
+    low: 'map.legend.low',
+    medium: 'map.legend.medium',
+    high: 'map.legend.high',
+    critical: 'map.legend.critical',
+} as const;
+
 const VILLAGES = [
     { name: 'Maga', lat: 10.856, lng: 14.921, risk: 'high' as const },
     { name: 'Pouss', lat: 10.851, lng: 15.046, risk: 'critical' as const },
@@ -76,7 +84,7 @@ export default function MapPage() {
                     <div>
                         <p className="text-[12px] tracking-[0.18em] uppercase mb-2"
                             style={{ color: 'var(--fw-teal)' }}>
-                            Maga · Cameroon
+                            {t('map.eyebrow')}
                         </p>
                         <h1 className="text-3xl sm:text-[2.2rem] font-semibold tracking-tight leading-none"
                             style={{ color: 'var(--fw-deep)' }}>
@@ -127,15 +135,15 @@ export default function MapPage() {
                             <li className="flex items-center gap-3">
                                 <span className="h-3 w-5 rounded" style={{ background: 'var(--fw-aqua)', opacity: 0.6 }} />
                                 <span className="text-[13.5px]" style={{ color: 'var(--fw-ink)', opacity: 0.75 }}>
-                                    Flood extent
+                                    {t('map.legend.flooded')}
                                 </span>
                             </li>
                             {(['low', 'medium', 'high', 'critical'] as const).map(level => (
                                 <li key={level} className="flex items-center gap-3">
                                     <span className="h-3 w-3 rounded-full" style={{ background: RISK_COLOR[level] }} />
-                                    <span className="text-[13.5px] capitalize"
+                                    <span className="text-[13.5px]"
                                         style={{ color: 'var(--fw-ink)', opacity: 0.75 }}>
-                                        {level} risk
+                                        {t(LEGEND_KEY[level])}
                                     </span>
                                 </li>
                             ))}
@@ -151,7 +159,7 @@ export default function MapPage() {
                                 {t('map.table.title')}
                             </h2>
                             <span className="text-[12px]" style={{ color: 'var(--fw-ink)', opacity: 0.45 }}>
-                                {sortedVillages.length} villages
+                                {sortedVillages.length} {t('map.villages')}
                             </span>
                         </div>
 
