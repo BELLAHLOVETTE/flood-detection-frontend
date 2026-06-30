@@ -812,6 +812,18 @@ export const translations = {
     en: 'Sources: OCHA Cameroon, UNOSAT, Cameroon Government, Cameroon Red Cross',
     fr: 'Sources: OCHA Cameroun, UNOSAT, Gouvernement camerounais, Croix-Rouge Cameroun',
   },
+  'hist.eyebrow': {
+    en: 'Maga · Cameroon',
+    fr: 'Maga · Cameroun',
+  },
+  'hist.people_affected': {
+    en: 'People affected',
+    fr: 'Personnes affectées',
+  },
+  'hist.area_flooded': {
+    en: 'Area flooded',
+    fr: 'Surface inondée',
+  },
 
   // Map Page
   'map.title': {

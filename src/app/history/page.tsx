@@ -68,7 +68,7 @@ export default function HistoryPage() {
                 <div className="max-w-7xl mx-auto px-6 pt-10 pb-8 fw-rise">
                     <p className="text-[12px] tracking-[0.18em] uppercase mb-2"
                         style={{ color: 'var(--fw-teal)' }}>
-                        Maga · Cameroon
+                        {t('hist.eyebrow')}
                     </p>
                     <h1 className="text-3xl sm:text-[2.2rem] font-semibold tracking-tight leading-none"
                         style={{ color: 'var(--fw-deep)' }}>
@@ -227,9 +227,9 @@ export default function HistoryPage() {
                                             )}
 
                                             <div className="mt-4 grid grid-cols-1 gap-2 rounded-xl bg-slate-50 p-3 sm:grid-cols-3">
-                                                <EventStat icon="👥" label="People affected" value={formatNumber(event.affected_population)} />
-                                                <EventStat icon="🗺️" label="Area flooded" value={`${event.affected_area_km2} km²`} />
-                                                <EventStat icon="📄" label="Source" value={event.source || '—'} />
+                                                <EventStat icon="👥" label={t('hist.people_affected')} value={formatNumber(event.affected_population)} />
+                                                <EventStat icon="🗺️" label={t('hist.area_flooded')} value={`${event.affected_area_km2} km²`} />
+                                                <EventStat icon="📄" label={t('hist.source')} value={event.source || '—'} />
                                             </div>
                                         </article>
                                     </li>
