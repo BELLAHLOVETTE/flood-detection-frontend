@@ -104,7 +104,131 @@ export const translations = {
   },
   'landing.why.title': { en: 'Why Choose FloodWatch?', fr: 'Pourquoi choisir FloodWatch?' },
   'landing.why.desc': { en: 'Advanced early warning technology tailored for Cameroon\'s geography', fr: 'Technologie d\'alerte précoce avancée adaptée à la géographie du Cameroun' },
-
+  // Landing Page (current aqua version)
+  'land.eyebrow': {
+    en: 'Maga · Far North Cameroon',
+    fr: 'Maga · Extrême-Nord Cameroun',
+  },
+  'land.hero.title1': {
+    en: 'Flood forecasting &',
+    fr: 'Prévision des crues et',
+  },
+  'land.hero.title2': {
+    en: 'early warning',
+    fr: 'alerte précoce',
+  },
+  'land.hero.desc': {
+    en: 'Satellite radar, rainfall data, and machine learning working together to give Maga communities advance warning of rising water.',
+    fr: 'Radar satellite, données de pluie et apprentissage automatique réunis pour donner aux communautés de Maga une alerte anticipée face à la montée des eaux.',
+  },
+  'land.hero.cta.dashboard': {
+    en: 'Open dashboard',
+    fr: 'Ouvrir le tableau de bord',
+  },
+  'land.hero.cta.forecast': {
+    en: 'View 7-day forecast',
+    fr: 'Voir les prévisions 7 jours',
+  },
+  'land.mod.alerts.title': {
+    en: 'Early warnings',
+    fr: 'Alertes précoces',
+  },
+  'land.mod.alerts.body': {
+    en: 'Subscribe by email to receive flood alerts before the water rises.',
+    fr: 'Inscrivez-vous par email pour recevoir des alertes avant la montée des eaux.',
+  },
+  'land.mod.map.title': {
+    en: 'Live flood map',
+    fr: 'Carte des crues en direct',
+  },
+  'land.mod.map.body': {
+    en: 'See flood-prone zones and current water extent across the region.',
+    fr: 'Visualisez les zones à risque et l\'étendue actuelle des eaux dans la région.',
+  },
+  'land.mod.history.title': {
+    en: 'Rainfall & trends',
+    fr: 'Pluie et tendances',
+  },
+  'land.mod.history.body': {
+    en: 'Track rainfall, water levels and past flood events over 25 years.',
+    fr: 'Suivez la pluie, les niveaux d\'eau et les crues passées sur 25 ans.',
+  },
+  'land.mod.open': {
+    en: 'Open →',
+    fr: 'Ouvrir →',
+  },
+  'land.how.eyebrow': {
+    en: 'How it works',
+    fr: 'Comment ça marche',
+  },
+  'land.how.title': {
+    en: 'Four data sources, one risk score, updated for the days ahead.',
+    fr: 'Quatre sources de données, un score de risque, actualisé pour les jours à venir.',
+  },
+  'land.how.sar.body': {
+    en: 'Radar sees through cloud to map standing water.',
+    fr: 'Le radar traverse les nuages pour cartographier les eaux stagnantes.',
+  },
+  'land.how.chirps.body': {
+    en: '25 years of daily rainfall feed the forecast.',
+    fr: '25 ans de pluie quotidienne alimentent les prévisions.',
+  },
+  'land.how.jrc.body': {
+    en: 'Lake Maga area tracked against its normal level.',
+    fr: 'La superficie du lac Maga suivie par rapport à son niveau normal.',
+  },
+  'land.how.ml.body': {
+    en: 'A trained model turns it all into a daily risk score.',
+    fr: 'Un modèle entraîné transforme le tout en score de risque quotidien.',
+  },
+  'land.cta.title': {
+    en: 'Stay ahead of the water',
+    fr: 'Gardez une longueur d\'avance sur les eaux',
+  },
+  'land.cta.desc': {
+    en: 'Get free flood alerts for Maga delivered to your inbox.',
+    fr: 'Recevez gratuitement les alertes inondation de Maga dans votre boîte mail.',
+  },
+  'land.cta.btn': {
+    en: 'Subscribe to alerts',
+    fr: 'S\'inscrire aux alertes',
+  },
+  'land.footer.tagline': {
+    en: 'Satellite-based flood early warning for Maga Sub-Division, Far North Cameroon.',
+    fr: 'Alerte précoce aux inondations par satellite pour l\'arrondissement de Maga, Extrême-Nord Cameroun.',
+  },
+  'land.footer.platform': {
+    en: 'Platform',
+    fr: 'Plateforme',
+  },
+  'land.footer.forecast7': {
+    en: '7-day forecast',
+    fr: 'Prévisions 7 jours',
+  },
+  'land.footer.floodmap': {
+    en: 'Flood map',
+    fr: 'Carte des crues',
+  },
+  'land.footer.histdata': {
+    en: 'Historical data',
+    fr: 'Données historiques',
+  },
+  'land.footer.about': {
+    en: 'About',
+    fr: 'À propos',
+  },
+  'land.footer.howitworks': {
+    en: 'How it works',
+    fr: 'Comment ça marche',
+  },
+  'land.footer.authlogin': {
+    en: 'Authority login',
+    fr: 'Connexion autorité',
+  },
+  'land.footer.project': {
+    en: '© 2026 Flood-Watch Cameroon · Final year project',
+    fr: '© 2026 Flood-Watch Cameroun · Projet de fin d\'études',
+  },
   // Dashboard Page
   'db.title': {
     en: 'Dashboard — Maga, Far North',
