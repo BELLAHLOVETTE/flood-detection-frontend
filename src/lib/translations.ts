@@ -334,6 +334,82 @@ export const translations = {
     en: '6h Update Cycle',
     fr: 'Cycle de 6h',
   },
+  'db.eyebrow': {
+    en: 'Maga · Far North Cameroon',
+    fr: 'Maga · Extrême-Nord Cameroun',
+  },
+  'db.heading': {
+    en: 'Flood risk dashboard',
+    fr: 'Tableau de bord des risques',
+  },
+  'db.updated_recently': {
+    en: 'recently',
+    fr: 'récemment',
+  },
+  'db.current_risk': {
+    en: 'Current risk',
+    fr: 'Risque actuel',
+  },
+  'db.stat.prob': {
+    en: 'Flood probability',
+    fr: 'Probabilité d\'inondation',
+  },
+  'db.stat.rain': {
+    en: 'Recent rainfall',
+    fr: 'Pluie récente',
+  },
+  'db.stat.rain_7d': {
+    en: '7-day {val} mm',
+    fr: '7 jours {val} mm',
+  },
+  'db.stat.lake': {
+    en: 'Lake Maga area',
+    fr: 'Superficie du lac Maga',
+  },
+  'db.stat.vs_normal': {
+    en: '{val}% vs normal',
+    fr: '{val}% vs normale',
+  },
+  'db.stat.subs': {
+    en: 'Subscribers',
+    fr: 'Abonnés',
+  },
+  'db.stat.verified': {
+    en: 'Verified',
+    fr: 'Vérifiés',
+  },
+  'db.stat.no_data': {
+    en: 'No data',
+    fr: 'Aucune donnée',
+  },
+  'db.chart.rain_title': {
+    en: 'Rainfall trends',
+    fr: 'Tendances des pluies',
+  },
+  'db.chart.rain_caption': {
+    en: 'Last 90 days · CHIRPS',
+    fr: '90 derniers jours · CHIRPS',
+  },
+  'db.chart.water_title': {
+    en: 'Water level',
+    fr: 'Niveau d\'eau',
+  },
+  'db.chart.water_caption': {
+    en: 'Lake Maga · JRC',
+    fr: 'Lac Maga · JRC',
+  },
+  'db.about': {
+    en: 'Flood-Watch combines Sentinel-1 radar, CHIRPS rainfall, and JRC water-extent data through a Random Forest model to estimate daily flood risk for the Maga region.',
+    fr: 'Flood-Watch combine le radar Sentinel-1, les pluies CHIRPS et les données d\'étendue d\'eau JRC via un modèle Random Forest pour estimer le risque quotidien d\'inondation dans la région de Maga.',
+  },
+  'db.about.model': {
+    en: 'Active model {val}.',
+    fr: 'Modèle actif {val}.',
+  },
+  'db.risk.low': { en: 'Low', fr: 'Faible' },
+  'db.risk.medium': { en: 'Medium', fr: 'Modéré' },
+  'db.risk.high': { en: 'High', fr: 'Élevé' },
+  'db.risk.critical': { en: 'Critical', fr: 'Critique' },
 
   // Login Page
   'login.toast.success': {

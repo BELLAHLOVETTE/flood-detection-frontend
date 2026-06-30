@@ -10,17 +10,18 @@ import {
     getWaterLevel, getSubscriberCount,
 } from '@/lib/api';
 import { formatNumber, timeAgo } from '@/lib/utils';
+import type { TranslationKey } from '@/lib/translations';
 
 // Only risk state carries color — everything else is aqua/neutral.
 function riskColor(level: string): string {
     const l = level?.toLowerCase();
-    if (['extreme', 'critical', 'high'].includes(l)) return '#c2410c'; // deep amber-red
-    if (['moderate', 'medium'].includes(l)) return '#b45309';          // amber
-    return 'var(--fw-teal)';                                            // calm teal = low
+    if (['extreme', 'critical', 'high'].includes(l)) return '#c2410c';
+    if (['moderate', 'medium'].includes(l)) return '#b45309';
+    return 'var(--fw-teal)';
 }
 
 export default function DashboardPage() {
-    const { locale } = useLanguage();
+    const { locale, t } = useLanguage();
 
     const { data: risk, isLoading: riskLoading } = useQuery({
         queryKey: ['risk-current'], queryFn: getCurrentRisk, refetchInterval: 30000,
@@ -44,7 +45,13 @@ export default function DashboardPage() {
 
     const pct = (currentRisk.probability * 100).toFixed(0);
     const rc = riskColor(currentRisk.risk_level);
-    const levelText = currentRisk.risk_level.charAt(0).toUpperCase() + currentRisk.risk_level.slice(1);
+    // Translated risk label (falls back to capitalized raw value if key missing)
+    const levelKey = `db.risk.${currentRisk.risk_level.toLowerCase()}` as TranslationKey;
+    const levelText = riskLoading
+        ? '—'
+        : t(levelKey) !== levelKey
+            ? t(levelKey)
+            : currentRisk.risk_level.charAt(0).toUpperCase() + currentRisk.risk_level.slice(1);
 
     return (
         <div className="min-h-screen" style={{ background: 'var(--fw-paper)' }}>
@@ -57,15 +64,15 @@ export default function DashboardPage() {
                         <div className="fw-rise">
                             <p className="text-[12px] tracking-[0.18em] uppercase mb-2"
                                 style={{ color: 'var(--fw-teal)' }}>
-                                Maga · Far North Cameroon
+                                {t('db.eyebrow')}
                             </p>
                             <h1 className="text-3xl sm:text-[2.2rem] font-semibold tracking-tight leading-none"
                                 style={{ color: 'var(--fw-deep)' }}>
-                                Flood risk dashboard
+                                {t('db.heading')}
                             </h1>
                             <p className="mt-3 text-[13px]" style={{ color: 'var(--fw-ink)', opacity: 0.55 }}>
-                                Updated {currentRisk.assessed_at ? timeAgo(currentRisk.assessed_at, locale) : 'recently'}
-                                {currentRisk.model_version && <> · Model {currentRisk.model_version}</>}
+                                {t('db.updated')} {currentRisk.assessed_at ? timeAgo(currentRisk.assessed_at, locale) : t('db.updated_recently')}
+                                {currentRisk.model_version && <> · {t('db.model')} {currentRisk.model_version}</>}
                             </p>
                         </div>
 
@@ -74,10 +81,10 @@ export default function DashboardPage() {
                             <div className="text-right">
                                 <div className="text-[11px] uppercase tracking-[0.16em]"
                                     style={{ color: 'var(--fw-ink)', opacity: 0.5 }}>
-                                    Current risk
+                                    {t('db.current_risk')}
                                 </div>
                                 <div className="text-[15px] font-medium mt-0.5" style={{ color: rc }}>
-                                    {riskLoading ? '—' : levelText}
+                                    {levelText}
                                 </div>
                             </div>
                             <div className="relative w-20 h-20 flex items-center justify-center">
@@ -100,32 +107,32 @@ export default function DashboardPage() {
             {/* ── Body ───────────────────────────────────────── */}
             <div className="max-w-6xl mx-auto px-5 sm:px-8 py-10 space-y-10">
 
-                {/* Stat strip — hairline-divided, no heavy cards */}
+                {/* Stat strip */}
                 <div className="grid grid-cols-2 lg:grid-cols-4 border-y fw-rise"
                     style={{ borderColor: 'var(--fw-line)' }}>
                     {[
                         {
-                            label: 'Flood probability',
+                            label: t('db.stat.prob'),
                             value: riskLoading ? '—' : `${pct}%`,
                             sub: levelText,
                             accent: rc,
                         },
                         {
-                            label: 'Recent rainfall',
+                            label: t('db.stat.rain'),
                             value: latestRain ? `${latestRain.rainfall_mm.toFixed(1)} mm` : '—',
-                            sub: latestRain ? `7-day ${latestRain.cumulative_7d.toFixed(0)} mm` : 'No data',
+                            sub: latestRain ? t('db.stat.rain_7d', { val: latestRain.cumulative_7d.toFixed(0) }) : t('db.stat.no_data'),
                         },
                         {
-                            label: 'Lake Maga area',
+                            label: t('db.stat.lake'),
                             value: latestWater ? `${latestWater.water_area_km2.toFixed(1)} km²` : '—',
                             sub: latestWater
-                                ? `${latestWater.change_percent > 0 ? '+' : ''}${latestWater.change_percent.toFixed(1)}% vs normal`
-                                : 'No data',
+                                ? t('db.stat.vs_normal', { val: `${latestWater.change_percent > 0 ? '+' : ''}${latestWater.change_percent.toFixed(1)}` })
+                                : t('db.stat.no_data'),
                         },
                         {
-                            label: 'Subscribers',
+                            label: t('db.stat.subs'),
                             value: subscribers ? formatNumber(subscribers.count) : '—',
-                            sub: 'Verified',
+                            sub: t('db.stat.verified'),
                         },
                     ].map((s, i) => (
                         <div key={i}
@@ -146,25 +153,24 @@ export default function DashboardPage() {
                     ))}
                 </div>
 
-                {/* Charts — quiet framing */}
+                {/* Charts */}
                 <div className="grid lg:grid-cols-2 gap-6">
-                    <ChartCard title="Rainfall trends" caption="Last 90 days · CHIRPS"
+                    <ChartCard title={t('db.chart.rain_title')} caption={t('db.chart.rain_caption')}
                         loading={rainLoading}>
                         <RainfallChart data={rainfall} />
                     </ChartCard>
 
-                    <ChartCard title="Water level" caption="Lake Maga · JRC"
+                    <ChartCard title={t('db.chart.water_title')} caption={t('db.chart.water_caption')}
                         loading={waterLoading}>
                         <WaterGauge data={latestWater} />
                     </ChartCard>
                 </div>
 
-                {/* About — one quiet line, not a boxed banner */}
+                {/* About */}
                 <p className="text-[13px] leading-relaxed max-w-3xl"
                     style={{ color: 'var(--fw-ink)', opacity: 0.55 }}>
-                    Flood-Watch combines Sentinel-1 radar, CHIRPS rainfall, and JRC water-extent
-                    data through a Random Forest model to estimate daily flood risk for the Maga
-                    region. {currentRisk.model_version && <>Active model {currentRisk.model_version}.</>}
+                    {t('db.about')}
+                    {currentRisk.model_version && <> {t('db.about.model', { val: currentRisk.model_version })}</>}
                 </p>
             </div>
         </div>
