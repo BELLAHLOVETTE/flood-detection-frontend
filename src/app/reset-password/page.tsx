@@ -5,11 +5,14 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { confirmPasswordReset } from '@/lib/api';
+import { useLanguage } from '@/lib/LanguageContext';
+import LanguageToggle from '@/components/LanguageToggle';
 import { Eye, EyeOff, Lock, CheckCircle2, AlertTriangle } from 'lucide-react';
 
 function ResetContent() {
     const params = useSearchParams();
     const router = useRouter();
+    const { t } = useLanguage();
     const uid = params.get('uid') || '';
     const token = params.get('token') || '';
 
@@ -22,14 +25,14 @@ function ResetContent() {
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
         setError('');
-        if (password.length < 8) { setError('Password must be at least 8 characters.'); return; }
+        if (password.length < 8) { setError(t('reset.pw_short')); return; }
         setLoading(true);
         try {
             await confirmPasswordReset(uid, token, password);
             setDone(true);
         } catch (err: unknown) {
             const ax = err as { response?: { data?: { error?: string } } };
-            setError(ax?.response?.data?.error || 'Reset failed. The link may have expired.');
+            setError(ax?.response?.data?.error || t('reset.err'));
         } finally {
             setLoading(false);
         }
@@ -38,8 +41,11 @@ function ResetContent() {
     const invalidLink = !uid || !token;
 
     return (
-        <div className="min-h-screen flex items-center justify-center p-6 font-sans"
+        <div className="min-h-screen flex items-center justify-center p-6 font-sans relative"
             style={{ background: 'var(--fw-paper)' }}>
+            <div className="absolute top-5 right-5">
+                <LanguageToggle />
+            </div>
             <div className="w-full max-w-md">
                 <div className="flex flex-col items-center mb-8">
                     <Image src="/favicon.svg" alt="Flood-Watch" width={64} height={64} />
@@ -55,15 +61,15 @@ function ResetContent() {
                             <CheckCircle2 className="w-9 h-9" style={{ color: 'var(--fw-teal)' }} />
                         </div>
                         <h2 className="text-2xl font-semibold" style={{ color: 'var(--fw-deep)' }}>
-                            Password reset
+                            {t('reset.done.title')}
                         </h2>
                         <p className="mt-2 text-[14px]" style={{ color: 'var(--fw-ink)', opacity: 0.65 }}>
-                            Your password has been updated. You can now sign in.
+                            {t('reset.done.desc')}
                         </p>
                         <button onClick={() => router.push('/login')}
                             className="w-full mt-6 py-3 rounded-xl text-white font-medium text-[15px] shadow-lg transition-all hover:-translate-y-px"
                             style={{ background: 'linear-gradient(to right, var(--fw-teal), var(--fw-aqua))' }}>
-                            Go to sign in
+                            {t('reset.goto')}
                         </button>
                     </div>
                 ) : invalidLink ? (
@@ -73,24 +79,24 @@ function ResetContent() {
                             <AlertTriangle className="w-8 h-8" style={{ color: '#dc2626' }} />
                         </div>
                         <h2 className="text-xl font-semibold" style={{ color: 'var(--fw-deep)' }}>
-                            Invalid reset link
+                            {t('reset.invalid.title')}
                         </h2>
                         <p className="mt-2 text-[14px]" style={{ color: 'var(--fw-ink)', opacity: 0.6 }}>
-                            This link is missing information. Request a new one from the sign-in page.
+                            {t('reset.invalid.desc')}
                         </p>
                         <Link href="/login" className="inline-block mt-5 text-[14px] font-medium"
                             style={{ color: 'var(--fw-teal)' }}>
-                            Back to sign in
+                            {t('reset.back')}
                         </Link>
                     </div>
                 ) : (
                     <>
                         <div className="text-center mb-7">
                             <h2 className="text-3xl font-semibold tracking-tight" style={{ color: 'var(--fw-deep)' }}>
-                                Set a new password
+                                {t('reset.title')}
                             </h2>
                             <p className="mt-1.5 text-[14px]" style={{ color: 'var(--fw-ink)', opacity: 0.6 }}>
-                                Choose a strong password for your account
+                                {t('reset.sub')}
                             </p>
                         </div>
 
@@ -110,7 +116,7 @@ function ResetContent() {
                                 </span>
                                 <input type={showPw ? 'text' : 'password'} value={password}
                                     onChange={(e) => setPassword(e.target.value)}
-                                    placeholder="New password" autoComplete="new-password"
+                                    placeholder={t('reset.placeholder')} autoComplete="new-password"
                                     className="w-full pl-10 pr-11 py-3 rounded-xl text-[14px] outline-none transition-all"
                                     style={{ background: 'var(--fw-mist)', border: '1px solid var(--fw-line)', color: 'var(--fw-ink)' }}
                                     onFocus={(e) => { e.currentTarget.style.borderColor = 'var(--fw-teal)'; e.currentTarget.style.background = '#fff'; }}
@@ -126,7 +132,7 @@ function ResetContent() {
                                 className="w-full py-3 rounded-xl text-white font-medium text-[15px] shadow-lg transition-all hover:-translate-y-px disabled:opacity-60 flex items-center justify-center gap-2"
                                 style={{ background: 'linear-gradient(to right, var(--fw-teal), var(--fw-aqua))' }}>
                                 {loading && <span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />}
-                                {loading ? 'Resetting…' : 'Reset password'}
+                                {loading ? t('reset.btn.loading') : t('reset.btn')}
                             </button>
                         </form>
                     </>
