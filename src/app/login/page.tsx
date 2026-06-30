@@ -28,6 +28,12 @@ function LoginContent() {
     const [email, setEmail] = useState('');
     const [organisation, setOrganisation] = useState('');
 
+    // forgot-password modal
+    const [showForgot, setShowForgot] = useState(false);
+    const [forgotEmail, setForgotEmail] = useState('');
+    const [forgotLoading, setForgotLoading] = useState(false);
+    const [forgotSent, setForgotSent] = useState(false);
+
     function switchMode(next: Mode) {
         setMode(next);
         setError('');
@@ -75,6 +81,27 @@ function LoginContent() {
         }
     }
 
+    async function handleForgot(e: React.FormEvent) {
+        e.preventDefault();
+        if (!forgotEmail.trim()) return;
+        setForgotLoading(true);
+        try {
+            const { requestPasswordReset } = await import('@/lib/api');
+            await requestPasswordReset(forgotEmail.trim());
+            setForgotSent(true);
+        } catch {
+            toast.error('Could not send reset link. Please try again.');
+        } finally {
+            setForgotLoading(false);
+        }
+    }
+
+    function closeForgot() {
+        setShowForgot(false);
+        setForgotEmail('');
+        setForgotSent(false);
+    }
+
     return (
         <div className="min-h-screen flex font-sans">
 
@@ -119,8 +146,8 @@ function LoginContent() {
                             </h2>
                             <p className="mt-3 text-[14px] leading-relaxed max-w-sm mx-auto"
                                 style={{ color: 'var(--fw-ink)', opacity: 0.65 }}>
-                                Your account has been created successfully. An administrator must
-                                approve your access before you can sign in to the dashboard.
+                                Your account has been created successfully. An administrator will
+                                review and activate your access before you can sign in.
                             </p>
 
                             <div className="mt-7 text-left rounded-2xl p-5"
@@ -132,7 +159,7 @@ function LoginContent() {
                                 <ul className="space-y-2.5 text-[13.5px]" style={{ color: 'var(--fw-ink)', opacity: 0.75 }}>
                                     {[
                                         'An administrator reviews your account',
-                                        'Your account is activated once reviewed',
+                                        'Your account is activated once approved',
                                         'You can then sign in to the dashboard',
                                     ].map((s, i) => (
                                         <li key={i} className="flex items-start gap-2.5">
@@ -210,17 +237,7 @@ function LoginContent() {
                                         show={showPw} toggle={() => setShowPw(!showPw)} />
                                     <div className="text-right">
                                         <button type="button"
-                                            onClick={async () => {
-                                                const em = window.prompt('Enter your account email to receive a reset link:');
-                                                if (!em) return;
-                                                try {
-                                                    const { requestPasswordReset } = await import('@/lib/api');
-                                                    await requestPasswordReset(em.trim());
-                                                    toast.success('If that email is registered, a reset link has been sent. Check your inbox (and spam).');
-                                                } catch {
-                                                    toast.error('Could not send reset link. Please try again.');
-                                                }
-                                            }}
+                                            onClick={() => setShowForgot(true)}
                                             className="text-[13px]" style={{ color: 'var(--fw-teal)' }}>
                                             Forgot password?
                                         </button>
@@ -228,6 +245,7 @@ function LoginContent() {
                                     <SubmitButton loading={loading} label="Sign In" />
                                 </form>
                             )}
+
                             {mode === 'signup' && (
                                 <form onSubmit={handleSignUp} className="space-y-4">
                                     <Field icon={<User className="w-4 h-4" />} placeholder="Username"
@@ -268,6 +286,78 @@ function LoginContent() {
                     )}
                 </div>
             </div>
+
+            {/* ── Forgot-password modal ── */}
+            {showForgot && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4"
+                    style={{ background: 'rgba(10,52,56,0.45)', backdropFilter: 'blur(6px)' }}
+                    onClick={closeForgot}>
+                    <div onClick={(e) => e.stopPropagation()}
+                        className="w-full max-w-md rounded-2xl p-7 fw-rise"
+                        style={{ background: '#fff', boxShadow: '0 20px 60px rgba(10,52,56,0.25)' }}>
+
+                        {forgotSent ? (
+                            <div className="text-center">
+                                <div className="mx-auto w-14 h-14 rounded-full grid place-items-center mb-4"
+                                    style={{ background: 'var(--fw-mist)' }}>
+                                    <CheckCircle2 className="w-7 h-7" style={{ color: 'var(--fw-teal)' }} />
+                                </div>
+                                <h3 className="text-xl font-semibold" style={{ color: 'var(--fw-deep)' }}>
+                                    Check your email
+                                </h3>
+                                <p className="mt-2 text-[13.5px] leading-relaxed" style={{ color: 'var(--fw-ink)', opacity: 0.65 }}>
+                                    If that address is registered, we&apos;ve sent a reset link.
+                                    Please check your inbox — and your spam folder.
+                                </p>
+                                <button onClick={closeForgot}
+                                    className="w-full mt-6 py-2.5 rounded-xl text-white font-medium text-[14px] transition-all hover:-translate-y-px"
+                                    style={{ background: 'linear-gradient(to right, var(--fw-teal), var(--fw-aqua))' }}>
+                                    Done
+                                </button>
+                            </div>
+                        ) : (
+                            <>
+                                <h3 className="text-xl font-semibold" style={{ color: 'var(--fw-deep)' }}>
+                                    Reset your password
+                                </h3>
+                                <p className="mt-1.5 text-[13.5px]" style={{ color: 'var(--fw-ink)', opacity: 0.6 }}>
+                                    Enter your account email and we&apos;ll send you a reset link.
+                                </p>
+
+                                <form onSubmit={handleForgot} className="mt-5 space-y-4">
+                                    <div className="relative">
+                                        <span className="absolute left-3.5 top-1/2 -translate-y-1/2"
+                                            style={{ color: 'var(--fw-ink)', opacity: 0.4 }}>
+                                            <Mail className="w-4 h-4" />
+                                        </span>
+                                        <input type="email" value={forgotEmail} autoFocus
+                                            onChange={(e) => setForgotEmail(e.target.value)}
+                                            placeholder="you@example.com"
+                                            className="w-full pl-10 pr-4 py-3 rounded-xl text-[14px] outline-none transition-all"
+                                            style={{ background: 'var(--fw-mist)', border: '1px solid var(--fw-line)', color: 'var(--fw-ink)' }}
+                                            onFocus={(e) => { e.currentTarget.style.borderColor = 'var(--fw-teal)'; e.currentTarget.style.background = '#fff'; }}
+                                            onBlur={(e) => { e.currentTarget.style.borderColor = 'var(--fw-line)'; e.currentTarget.style.background = 'var(--fw-mist)'; }} />
+                                    </div>
+
+                                    <div className="flex gap-3">
+                                        <button type="button" onClick={closeForgot}
+                                            className="flex-1 py-2.5 rounded-xl font-medium text-[14px] transition-colors"
+                                            style={{ background: 'var(--fw-mist)', color: 'var(--fw-deep)' }}>
+                                            Cancel
+                                        </button>
+                                        <button type="submit" disabled={forgotLoading}
+                                            className="flex-1 py-2.5 rounded-xl text-white font-medium text-[14px] transition-all hover:-translate-y-px disabled:opacity-60 flex items-center justify-center gap-2"
+                                            style={{ background: 'linear-gradient(to right, var(--fw-teal), var(--fw-aqua))' }}>
+                                            {forgotLoading && <span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />}
+                                            {forgotLoading ? 'Sending…' : 'Send link'}
+                                        </button>
+                                    </div>
+                                </form>
+                            </>
+                        )}
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
