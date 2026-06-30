@@ -906,6 +906,112 @@ export const translations = {
     en: 'villages',
     fr: 'villages',
   },
+  // About Page
+  'about.badge': {
+    en: 'Remote sensing early warning system',
+    fr: 'Système d\'alerte précoce par télédétection',
+  },
+  'about.hero.desc': {
+    en: 'A satellite-powered flood detection and early warning system for Maga Sub-Division, Far North Cameroon — protecting communities with machine learning and space technology.',
+    fr: 'Un système de détection et d\'alerte précoce aux inondations par satellite pour l\'arrondissement de Maga, Extrême-Nord Cameroun — protégeant les communautés grâce à l\'apprentissage automatique et aux technologies spatiales.',
+  },
+  'about.cta.dashboard': { en: 'Open dashboard', fr: 'Ouvrir le tableau de bord' },
+  'about.cta.forecast': { en: '7-day forecast', fr: 'Prévisions 7 jours' },
+  'about.stat.2019': { en: 'People affected in 2019', fr: 'Personnes affectées en 2019' },
+  'about.stat.2022': { en: 'People affected in 2022', fr: 'Personnes affectées en 2022' },
+  'about.stat.2024': { en: 'People affected in 2024', fr: 'Personnes affectées en 2024' },
+  'about.stat.note': {
+    en: 'Maga Sub-Division is one of the most flood-prone regions in Cameroon. Annual flooding from the Logone River and Lake Maga affects tens of thousands of people every rainy season between July and October.',
+    fr: 'L\'arrondissement de Maga est l\'une des régions les plus exposées aux inondations au Cameroun. Les crues annuelles du fleuve Logone et du lac Maga touchent des dizaines de milliers de personnes chaque saison des pluies, de juillet à octobre.',
+  },
+  'about.how.eyebrow': { en: 'End to end', fr: 'De bout en bout' },
+  'about.how.title': { en: 'How the system works', fr: 'Comment le système fonctionne' },
+  'about.how.sub': { en: 'From satellite image to alert', fr: 'De l\'image satellite à l\'alerte' },
+  'about.how.1.title': { en: 'Satellite acquisition', fr: 'Acquisition satellite' },
+  'about.how.1.desc': {
+    en: 'Sentinel-1 C-band SAR radar captures images of the Maga region every 12 days — through clouds, at night, in any weather.',
+    fr: 'Le radar SAR bande C de Sentinel-1 capture des images de la région de Maga tous les 12 jours — à travers les nuages, de nuit, par tous les temps.',
+  },
+  'about.how.2.title': { en: 'Google Earth Engine', fr: 'Google Earth Engine' },
+  'about.how.2.desc': {
+    en: 'GEE processes raw radar images using SAR change detection, and extracts CHIRPS rainfall and JRC water surface data automatically.',
+    fr: 'GEE traite les images radar brutes par détection de changement SAR, et extrait automatiquement les données de pluie CHIRPS et de surface d\'eau JRC.',
+  },
+  'about.how.3.title': { en: 'ML risk assessment', fr: 'Évaluation du risque par ML' },
+  'about.how.3.desc': {
+    en: 'A Random Forest model trained on 25 years of data (2000–2025) calculates flood probability using 11 environmental indicators.',
+    fr: 'Un modèle Random Forest entraîné sur 25 ans de données (2000–2025) calcule la probabilité d\'inondation à partir de 11 indicateurs environnementaux.',
+  },
+  'about.how.4.title': { en: 'Early warning alert', fr: 'Alerte précoce' },
+  'about.how.4.desc': {
+    en: 'When risk exceeds the alert threshold, email alerts are dispatched to all verified subscribers.',
+    fr: 'Lorsque le risque dépasse le seuil d\'alerte, des alertes par email sont envoyées à tous les abonnés vérifiés.',
+  },
+  'about.data.title': { en: 'Data sources', fr: 'Sources de données' },
+  'about.data.sentinel': {
+    en: 'C-band radar imagery at 10m resolution. 12-day revisit. Penetrates cloud cover — essential for rainy season monitoring.',
+    fr: 'Imagerie radar bande C à 10 m de résolution. Revisite de 12 jours. Traverse les nuages — essentiel pour le suivi en saison des pluies.',
+  },
+  'about.data.chirps': {
+    en: 'Daily rainfall records from 1981 to present at 5.5km resolution. Primary data source for ML training and forecast baseline.',
+    fr: 'Relevés de pluie quotidiens depuis 1981 à 5,5 km de résolution. Source principale pour l\'entraînement ML et la base des prévisions.',
+  },
+  'about.data.jrc': {
+    en: 'Monthly water surface extent since 1984 at 30m resolution. Used to track Lake Maga water levels and detect permanent water.',
+    fr: 'Étendue mensuelle de surface d\'eau depuis 1984 à 30 m de résolution. Utilisée pour suivre le niveau du lac Maga et détecter l\'eau permanente.',
+  },
+  'about.data.srtm': {
+    en: '30m digital elevation model. Used to mask steep slopes from flood detection and identify low-lying flood-prone areas.',
+    fr: 'Modèle numérique d\'élévation à 30 m. Utilisé pour masquer les pentes raides et identifier les zones basses inondables.',
+  },
+  'about.data.gfs': {
+    en: 'Global atmospheric forecast model at 27km resolution. Combined with CHIRPS seasonal data to produce 7-day rainfall predictions.',
+    fr: 'Modèle de prévision atmosphérique mondial à 27 km de résolution. Combiné aux données saisonnières CHIRPS pour produire les prévisions de pluie sur 7 jours.',
+  },
+  'about.data.unosat': {
+    en: 'UN-validated historical flood maps. Used to label training data for the ML model and verify detection accuracy.',
+    fr: 'Cartes historiques d\'inondation validées par l\'ONU. Utilisées pour étiqueter les données d\'entraînement et vérifier la précision de détection.',
+  },
+  'about.data.free': { en: 'Free via Google Earth Engine', fr: 'Gratuit via Google Earth Engine' },
+  'about.data.opendata': { en: 'Open data (UN)', fr: 'Données ouvertes (ONU)' },
+  'about.feat.title': { en: 'System features', fr: 'Fonctionnalités du système' },
+  'about.feat.1.title': { en: '7-day flood forecast', fr: 'Prévision d\'inondation 7 jours' },
+  'about.feat.1.desc': {
+    en: 'ML-powered probability forecast for the next 7 days, combining GFS atmospheric data with CHIRPS seasonal climatology.',
+    fr: 'Prévision de probabilité par ML pour les 7 prochains jours, combinant les données atmosphériques GFS et la climatologie saisonnière CHIRPS.',
+  },
+  'about.feat.2.title': { en: 'Interactive flood map', fr: 'Carte interactive des inondations' },
+  'about.feat.2.desc': {
+    en: 'Sentinel-1 SAR flood extent overlaid on a Leaflet map with village risk markers and satellite base layers.',
+    fr: 'Étendue d\'inondation Sentinel-1 SAR superposée sur une carte Leaflet avec marqueurs de risque par village et fonds satellite.',
+  },
+  'about.feat.3.title': { en: 'Email alerts', fr: 'Alertes par email' },
+  'about.feat.3.desc': {
+    en: 'OTP-verified subscriber system. Alerts in English and French when risk reaches High or Critical level.',
+    fr: 'Système d\'abonnés vérifiés par OTP. Alertes en anglais et français lorsque le risque atteint le niveau Élevé ou Critique.',
+  },
+  'about.feat.4.title': { en: 'Authority dashboard', fr: 'Tableau de bord autorité' },
+  'about.feat.4.desc': {
+    en: 'Secure admin interface for government officials and NGOs. Manual alert dispatch, system health, subscriber management.',
+    fr: 'Interface d\'administration sécurisée pour les autorités et ONG. Envoi manuel d\'alertes, santé du système, gestion des abonnés.',
+  },
+  'about.tech.title': { en: 'Technology stack', fr: 'Pile technologique' },
+  'about.tech.gee': { en: 'Satellite processing', fr: 'Traitement satellite' },
+  'about.tech.sar': { en: 'Radar detection', fr: 'Détection radar' },
+  'about.tech.ml': { en: 'Risk prediction', fr: 'Prédiction du risque' },
+  'about.tech.django': { en: 'REST API backend', fr: 'Backend API REST' },
+  'about.tech.next': { en: 'React frontend', fr: 'Frontend React' },
+  'about.tech.ws': { en: 'Real-time updates', fr: 'Mises à jour en temps réel' },
+  'about.tech.pg': { en: 'Production database', fr: 'Base de données de production' },
+  'about.tech.sendgrid': { en: 'Email delivery', fr: 'Distribution des emails' },
+  'about.academic.title': { en: 'Academic context', fr: 'Contexte académique' },
+  'about.academic.desc': {
+    en: 'This system was developed as a final year engineering project. It demonstrates how satellite remote sensing and machine learning can be applied to protect vulnerable communities from natural disasters in the Cameroonian context. All satellite data is freely available through Google Earth Engine.',
+    fr: 'Ce système a été développé comme projet d\'ingénierie de fin d\'études. Il démontre comment la télédétection satellite et l\'apprentissage automatique peuvent être appliqués pour protéger les communautés vulnérables face aux catastrophes naturelles dans le contexte camerounais. Toutes les données satellite sont librement accessibles via Google Earth Engine.',
+  },
+  'about.academic.open': { en: 'Open the system →', fr: 'Ouvrir le système →' },
+  'about.academic.forecast': { en: 'View forecast', fr: 'Voir les prévisions' },
+  'about.step': { en: 'STEP', fr: 'ÉTAPE' },
 
   // Admin Layout
   'admin.layout.checking': {
